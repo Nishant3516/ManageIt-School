@@ -16,18 +16,6 @@ class AdminScreen extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Navigate to the screen to show class students
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ShowClassesScreen(),
-                  ),
-                );
-              },
-              child: const Text('Show Class Students'),
-            ),
-            const YMargin(height: 20),
-            ElevatedButton(
-              onPressed: () {
                 // Navigate to the screen to search student details
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -40,7 +28,6 @@ class AdminScreen extends StatelessWidget {
             const YMargin(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Navigate to the screen to search student details
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const AddStudentScreen(),
@@ -48,6 +35,17 @@ class AdminScreen extends StatelessWidget {
                 );
               },
               child: const Text('Add Student'),
+            ),
+            const YMargin(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ShowClassesScreen(),
+                  ),
+                );
+              },
+              child: const Text('Manage Classes'),
             ),
           ],
         ),

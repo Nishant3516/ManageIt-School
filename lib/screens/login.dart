@@ -135,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const YMargin(),
                             TextFormField(
                               controller: userNameController,
+                              autocorrect: false,
                               validator: (value) {
                                 final RegExp userNameRegExp =
                                     RegExp(r'^[a-zA-Z][a-zA-Z0-9_-]{2,19}$');

@@ -70,6 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const YMargin(),
                           TextFormField(
                             controller: _emailController,
+                            autocorrect: false,
                             validator: (value) {
                               final RegExp userNameRegExp =
                                   RegExp(r'^[a-zA-Z][a-zA-Z0-9_-]{2,19}$');
@@ -105,6 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const YMargin(),
                           TextFormField(
                             controller: _userNameController,
+                            autocorrect: false,
                             validator: (value) {
                               final RegExp userNameRegExp =
                                   RegExp(r'^[a-zA-Z][a-zA-Z0-9_-]{2,19}$');
@@ -192,7 +194,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to the Login screen
                   Navigator.pop(context);
                 },
                 child: const Text('Already have an account? Log in'),

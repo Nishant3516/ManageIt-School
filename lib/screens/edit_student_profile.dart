@@ -63,7 +63,6 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers when the widget is disposed
     firstNameController.dispose();
     lastNameController.dispose();
     rollNumberController.dispose();
@@ -88,9 +87,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: () {
@@ -107,6 +106,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                       : null,
                 ),
               ),
+              const YMargin(),
               _buildTextField('First Name', firstNameController),
               _buildTextField('Last Name', lastNameController),
               _buildTextField('Roll Number', rollNumberController),
