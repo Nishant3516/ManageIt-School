@@ -22,6 +22,17 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>?> fetchUserDetails(String token) async {
+    const String url = "https://candeylabs.com/api/account";
+    final response = await http
+        .get(Uri.parse(url), headers: {'Authorization': 'Bearer $token'});
+    if (response.statusCode == 200) {
+      return Map<String, dynamic>.from(json.decode(response.body));
+    } else {
+      return null;
+    }
+  }
+
   static Future<void> addStudent(Student postData) async {
     const String apiUrl = "https://candeylabs.com/api/class-students";
 

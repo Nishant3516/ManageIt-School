@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/divider_with_text.dart';
 import 'package:manageit_school/globalWidgets/individual_button.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/social_auth.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
+import 'package:manageit_school/screens/dashboard.dart';
 import 'package:manageit_school/screens/forgot_password.dart';
 import 'package:manageit_school/screens/home.dart';
 import 'package:manageit_school/screens/register.dart';
-import 'package:manageit_school/services/auth_service.dart';
+import 'package:manageit_school/services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,11 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
 
   void validateLogin(bool saveLoginData) async {
-    NavigatorWidget().screenPushReplacement(
-        context,
-        // HomeScreen(userDetails: userData),
-        const HomeScreen());
-
     final Map<String, dynamic>? userData;
     if (_loginFormKey.currentState!.validate()) {
       setState(() {
@@ -37,41 +34,33 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       try {
         if (saveLoginData) {
-          await AuthService().authenticate(
+          await AuthController().authenticateUser(
             userNameController.text,
             passwordController.text,
             saveLoginData,
           );
-          // userData = await AuthController().fetchUserDetailsfromSP();
-          // NavigatorWidget().screenPushReplacement(
-          //     context,
-          // HomeScreen(userDetails: userData),
-          //     const HomeScreen());
+          userData = await AuthController().fetchUserDetailsfromSP();
+          NavigatorWidget().screenPushReplacement(context, HomeScreen());
         } else {
-          // final String? userToken = await AuthController().getUserToken(
-          //   userNameController.text,
-          //   passwordController.text,
-          //   saveLoginData,
-          // );
-          // if (userToken != null) {
-          //   userData = await ApiService().fetchUserDetails(userToken);
-          //   NavigatorWidget().screenPushReplacement(
-          //     context,
-          //     HomeScreen(
-          //       userDetails: userData,
-          //       token: userToken,
-          //     ),
-          //   );
-          // } else {
-          //   ScaffoldMessenger.of(context).clearSnackBars();
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     const SnackBar(
-          //       content: Text('Error authenticating the user'),
-          //     ),
-          //   );
-          // }
+          final String? userToken = await AuthController().getUserToken(
+            userNameController.text,
+            passwordController.text,
+            saveLoginData,
+          );
+          if (userToken != null) {
+            userData = await ApiService().fetchUserDetails(userToken);
+            NavigatorWidget().screenPushReplacement(context, DashBoard());
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Error authenticating the user'),
+              ),
+            );
+          }
         }
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Invalid username or password'),
@@ -140,11 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 final RegExp userNameRegExp =
                                     RegExp(r'^[a-zA-Z][a-zA-Z0-9_-]{2,19}$');
 
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    !userNameRegExp.hasMatch(value)) {
-                                  return 'Enter a valid user name';
-                                }
+                                // if (value == null ||
+                                //     value.isEmpty ||
+                                //     !userNameRegExp.hasMatch(value)) {
+                                //   return 'Enter a valid user name';
+                                // }
                                 return null;
                               },
                               decoration: InputDecoration(
@@ -187,17 +176,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                 ),
                                 border: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 50, color: Colors.black)),
+                                  borderSide: BorderSide(
+                                      width: 50, color: Colors.black),
+                                ),
                               ),
                               validator: (value) {
                                 final RegExp passwordRegExp = RegExp(
                                     r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$');
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    !passwordRegExp.hasMatch(value)) {
-                                  return 'Password must be of atleast 8 characters and must contain digits, special character annd uppercase and lowercase letters';
-                                }
+                                // if (value == null ||
+                                //     value.isEmpty ||
+                                //     !passwordRegExp.hasMatch(value)) {
+                                //   return 'Password must be of atleast 8 characters and must contain\ndigits, special character annd uppercase and lowercase\nletters';
+                                // }
                                 return null;
                               },
                             ),
