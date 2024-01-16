@@ -2,26 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/models/models.dart';
-import 'package:manageit_school/screens/fees_due.dart';
 import 'package:manageit_school/screens/overall_attendance_screen.dart';
+import 'package:manageit_school/screens/student_payement_search.dart.dart';
 import 'package:manageit_school/screens/student_profile.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({super.key});
+  final Map<String, dynamic> user;
+  const DashBoard({
+    super.key,
+    required this.user,
+  });
 
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
-  List<List<dynamic>> mainBox = [
+  late List<List<dynamic>> finalDashboardMenu = [];
+  // bool isUserAdmin = false;
+
+  @override
+  void initState() {
+    finalDashboardMenu = (!widget.user['authorities'].contains('ROLE_ADMIN'))
+        ? Constants().adminDashboardMenu
+        : Constants().studentsDashboardMenu;
+    super.initState();
+  }
+
+  final List<List<dynamic>> studentsMainBox = [
     [
       'assets/icons/ic_attendance.png',
       'Attendance',
       '80.39 %',
       const OverallAttendanceScreen()
     ],
-    ['assets/icons/ic_fees_due.png', 'Fees due', '₹ 6400', const FeesDue()],
+    [
+      'assets/icons/ic_fees_due.png',
+      'Fees due',
+      '₹ 6400',
+      const StudentPaymentSearchScreen()
+    ],
   ];
 
   final Student student = Student(
@@ -76,9 +96,9 @@ class _DashBoardState extends State<DashBoard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Hi Akshay',
-                        style: TextStyle(
+                      Text(
+                        'Hi ${widget.user['firstname']}',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -151,14 +171,14 @@ class _DashBoardState extends State<DashBoard> {
                             childAspectRatio: 0.9,
                           ),
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: mainBox.length,
+                          itemCount: studentsMainBox.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             return DashBoardMainBox(
-                              iconImage: mainBox[index][0],
-                              title: mainBox[index][1],
-                              value: mainBox[index][2],
-                              nextScreen: mainBox[index][3],
+                              iconImage: studentsMainBox[index][0],
+                              title: studentsMainBox[index][1],
+                              value: studentsMainBox[index][2],
+                              nextScreen: studentsMainBox[index][3],
                             );
                           },
                         ),
@@ -174,13 +194,13 @@ class _DashBoardState extends State<DashBoard> {
                             mainAxisSpacing: 20,
                             childAspectRatio: 1.3,
                           ),
-                          itemCount: Constants().dashboardMenu.length,
+                          itemCount: finalDashboardMenu.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
                             return DashBoardMenu(
-                              iconImage: Constants().dashboardMenu[index][0],
-                              title: Constants().dashboardMenu[index][1],
-                              nextScreen: Constants().dashboardMenu[index][2],
+                              iconImage: finalDashboardMenu[index][0],
+                              title: finalDashboardMenu[index][1],
+                              nextScreen: finalDashboardMenu[index][2],
                             );
                           },
                         ),
@@ -200,14 +220,14 @@ class _DashBoardState extends State<DashBoard> {
 class DashBoardMainBox extends StatelessWidget {
   final String iconImage;
   final String title;
-  final String value;
+  final String? value;
   final Widget nextScreen;
   const DashBoardMainBox({
     super.key,
     required this.iconImage,
     required this.title,
-    required this.value,
     required this.nextScreen,
+    this.value,
   });
 
   @override
@@ -231,13 +251,14 @@ class DashBoardMainBox extends StatelessWidget {
               height: 60,
               width: 60,
             ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 28,
+            if (value != null)
+              Text(
+                value!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28,
+                ),
               ),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

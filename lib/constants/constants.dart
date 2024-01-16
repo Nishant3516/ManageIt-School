@@ -5,6 +5,8 @@ import 'package:manageit_school/screens/onboarding.dart';
 import 'package:manageit_school/screens/result.dart';
 import 'package:manageit_school/screens/school_gallery.dart';
 import 'package:manageit_school/screens/school_holiday.dart';
+import 'package:manageit_school/screens/show_classes.dart';
+import 'package:manageit_school/screens/student_payement_search.dart.dart';
 import 'package:manageit_school/screens/time_table.dart';
 
 class Constants {
@@ -14,7 +16,7 @@ class Constants {
   static const String token =
       "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuaXNoYW50LnNzaWsiLCJhdXRoIjoiUk9MRV9BRE1JTixST0xFX1NDSE9PTF9BRE1JTixST0xFX1NDSE9PTF9TVFVERU5ULFJPTEVfU0NIT09MX1RFQUNIRVIsUk9MRV9VU0VSIiwiZXhwIjoxNzA2Mjg5MjkxfQ.4uW4knnhC0mMdAzZsJteprfL76EanqFSvhaYKD3mYuE4Cax8onTV8EtGWYDuBguOgsX_fh0I_S6TjsC9MyLrdA";
 
-  List<List<dynamic>> dashboardMenu = [
+  List<List<dynamic>> studentsDashboardMenu = [
     // ['assets/icons/ic_quiz.png', 'Play Quiz', PlayQuiz()],
     // ['assets/icons/ic_assignment.png', 'Assignment', AssignmentScreen()],
     ['assets/icons/ic_holiday.png', 'School Holiday', const SchoolHoliday()],
@@ -35,5 +37,17 @@ class Constants {
     ['assets/icons/ic_password.png', 'Reset Password', ChangePasswordScreen()],
     // ['assets/icons/ic_event.png', 'Events', EventsScreen()],
     ['assets/icons/ic_logout.png', 'Logout', const OnboardingScreen()],
+  ];
+  final List<List<dynamic>> adminDashboardMenu = [
+    [
+      'assets/icons/ic_attendance.png',
+      'Manage\nClasses',
+      const ShowClassesScreen()
+    ],
+    [
+      'assets/icons/ic_fees_due.png',
+      'Manage\nPayments',
+      const StudentPaymentSearchScreen()
+    ],
   ];
 }

@@ -3,6 +3,7 @@ import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/screens/add_student.dart';
 import 'package:manageit_school/screens/search_student_screen.dart';
 import 'package:manageit_school/screens/show_classes.dart';
+import 'package:manageit_school/screens/student_payement_search.dart.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -46,6 +47,17 @@ class AdminScreen extends StatelessWidget {
                 );
               },
               child: const Text('Manage Classes'),
+            ),
+            const YMargin(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const StudentPaymentSearchScreen(),
+                  ),
+                );
+              },
+              child: const Text('Manage Payments'),
             ),
           ],
         ),

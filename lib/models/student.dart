@@ -38,8 +38,8 @@ class Student {
   Student({
     // required this.studentId,
     required this.firstName,
-    this.startDate,
     required this.schoolClass,
+    this.startDate,
     this.phoneNumber,
     this.fatherName,
     this.lastName,

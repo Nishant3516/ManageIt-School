@@ -7,7 +7,7 @@ class Class {
   final String? createDate;
   final String? lastModified;
   final String? cancelDate;
-  final School? school; // Make the school field nullable
+  final School? school;
   final dynamic classStudents;
   final dynamic classLessionPlans;
   final dynamic schoolNotifications;
@@ -74,7 +74,7 @@ class Class {
       'cancelDate': cancelDate,
       'classStudents': classStudents,
       'classLessionPlans': classLessionPlans,
-      'school': school?.toJson(), // Convert School to JSON if not null
+      'school': school?.toJson(),
       'schoolNotifications': schoolNotifications,
       'classFees': classFees,
       'classSubjects': classSubjects,

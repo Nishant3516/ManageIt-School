@@ -40,7 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
             saveLoginData,
           );
           userData = await AuthController().fetchUserDetailsfromSP();
-          NavigatorWidget().screenPushReplacement(context, HomeScreen());
+          print(userData);
+          NavigatorWidget().screenPushReplacement(context, const HomeScreen());
         } else {
           final String? userToken = await AuthController().getUserToken(
             userNameController.text,
@@ -49,7 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           if (userToken != null) {
             userData = await ApiService().fetchUserDetails(userToken);
-            NavigatorWidget().screenPushReplacement(context, DashBoard());
+            NavigatorWidget()
+                .screenPushReplacement(context, DashBoard(user: userData!));
           } else {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
