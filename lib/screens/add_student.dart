@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/class.dart';
 import 'package:manageit_school/models/student.dart';
@@ -33,16 +34,24 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   }
 
   void fetchClasses() async {
-    final result = await ApiService.fetchClasses();
+    final AuthController authController = AuthController();
+    final String? userToken = await authController.getToken();
 
-    setState(() {
-      _classes = result;
-      if (_classes.isNotEmpty) {
-        _selectedClass = _classes[0];
-      } else {
-        _selectedClass = null;
-      }
-    });
+    if (userToken != null) {
+      final result = await ApiService.fetchClasses(userToken);
+
+      setState(() {
+        _classes = result;
+        if (_classes.isNotEmpty) {
+          _selectedClass = _classes[0];
+        } else {
+          _selectedClass = null;
+        }
+      });
+    } else {
+      // Handle the case where the user is not logged in (userToken is null)
+      // You may want to redirect the user to the login screen or take appropriate action.
+    }
   }
 
   @override
@@ -107,10 +116,20 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     );
 
     try {
-      // Attempt to add the student
-      await ApiService.addStudent(newStudent);
-      // Optionally, show a success message to the user
-      print("Student added successfully");
+      // Obtain user token
+      final AuthController authController = AuthController();
+      final String? userToken = await authController.getToken();
+
+      if (userToken != null) {
+        // Attempt to add the student with the user token
+        await ApiService.addStudent(userToken, newStudent);
+        // Optionally, show a success message to the user
+        print("Student added successfully");
+      } else {
+        // Handle the case where user token is null (user not logged in)
+        print("User not logged in");
+        // Optionally, show a message to the user
+      }
     } catch (e) {
       // Handle the error, possibly show a message to the user
       print("An error occurred while adding the student: $e");

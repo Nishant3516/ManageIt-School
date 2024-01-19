@@ -4,8 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AuthController {
-  Future<String?> authenticateUser(
-      String username, String password, bool rememberMe) async {
+  Future<String?> getUserToken(String username, String password) async {
     try {
       const url = "https://candeylabs.com/api/authenticate";
       final response = await http.post(
@@ -16,33 +15,6 @@ class AuthController {
         body: json.encode({
           "username": username,
           "password": password,
-          "rememberMe": rememberMe,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final Map result = json.decode(response.body);
-        final String token = result["id_token"];
-        return token;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<String?> getUserToken(
-      String username, String password, bool rememberMe) async {
-    try {
-      const url = "https://candeylabs.com/api//authenticate";
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          "username": username,
-          "password": password,
-          "rememberMe": rememberMe,
         }),
       );
 
@@ -119,7 +91,7 @@ class AuthController {
   Future<void> registerUser(
       String username, String password, String email) async {
     try {
-      const url = "https://candeylabs.com/api//register";
+      const url = "https://candeylabs.com/api/register";
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},

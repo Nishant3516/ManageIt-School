@@ -1,13 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/models/class.dart';
 import 'package:manageit_school/models/student.dart';
 
-const String token = Constants.token;
-
 class ApiService {
-  static Future<List<Class>> fetchClasses() async {
+  static Future<List<Class>> fetchClasses(String token) async {
     const String apiUrl = "https://candeylabs.com/api/school-classes";
 
     final response = await http.get(
@@ -33,7 +30,7 @@ class ApiService {
     }
   }
 
-  static Future<void> addStudent(Student postData) async {
+  static Future<void> addStudent(String token, Student postData) async {
     const String apiUrl = "https://candeylabs.com/api/class-students";
 
     try {

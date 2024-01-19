@@ -4,8 +4,10 @@ import 'package:manageit_school/services/payment_service.dart';
 
 class PaymentDetails extends StatelessWidget {
   final int id;
-
-  const PaymentDetails({Key? key, required this.id}) : super(key: key);
+  const PaymentDetails({
+    super.key,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {

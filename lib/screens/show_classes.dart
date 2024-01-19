@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/models/class.dart';
 import 'package:manageit_school/screens/add_student.dart';
@@ -18,8 +19,16 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
   List<Class>? classes;
 
   Future<List<Class>> loadClasses() async {
-    final List<Class>? result = await ApiService.fetchClasses();
-    return result ?? [];
+    final AuthController authController = AuthController();
+    final String? userToken = await authController.getToken();
+
+    if (userToken != null) {
+      final List<Class>? result = await ApiService.fetchClasses(userToken);
+      return result ?? [];
+    } else {
+      // Handle the case where userToken is null (user not logged in)
+      return [];
+    }
   }
 
   @override

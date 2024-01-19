@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/divider_with_text.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
@@ -32,16 +33,24 @@ class StudentPaymentSearchScreenState
   }
 
   Future<void> fetchClasses() async {
-    final result = await ApiService.fetchClasses();
+    final AuthController authController = AuthController();
+    final String? userToken = await authController.getToken();
 
-    setState(() {
-      classesList = result;
-      if (classesList.isNotEmpty) {
-        selectedClass = classesList[0];
-      } else {
-        selectedClass = null;
-      }
-    });
+    if (userToken != null) {
+      final result = await ApiService.fetchClasses(userToken);
+
+      setState(() {
+        classesList = result;
+        if (classesList.isNotEmpty) {
+          selectedClass = classesList[0];
+        } else {
+          selectedClass = null;
+        }
+      });
+    } else {
+      // Handle the case where the user is not logged in (userToken is null)
+      // You may want to redirect the user to the login screen or take appropriate action.
+    }
   }
 
   Future<void> fetchStudentsFromClass(int classId) async {

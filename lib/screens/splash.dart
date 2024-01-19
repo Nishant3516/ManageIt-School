@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:manageit_school/screens/dashboard.dart'; // Import your dashboard screen
 import 'package:manageit_school/screens/onboarding.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             colors: [
               Color.fromARGB(255, 39, 194, 241),
-              Color.fromARGB(255, 216, 78, 78)
+              Color.fromARGB(255, 216, 78, 78),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -27,15 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     Image.asset(
-              //       'assets/images/Illustration.png',
-              //       width: MediaQuery.of(context).size.width * 0.7,
-              //     ),
-              //   ],
-              // ),
               Image.asset(
                 'assets/images/logo_without_bg.png',
               ),
@@ -49,11 +42,39 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-      );
-    });
+    checkUserLoggedIn();
+  }
+
+  Future<void> checkUserLoggedIn() async {
+    final AuthController authController = AuthController();
+    final String? token = await authController.getToken();
+
+    if (token != null) {
+      // Fetch user information based on the token
+      final Map<String, dynamic>? userDetails =
+          await authController.fetchUserDetails(token);
+
+      // User is logged in, navigate to the dashboard with user information
+      navigateToDashboard(userDetails);
+    } else {
+      // User is not logged in, navigate to the onboarding screen
+      navigateToOnboarding();
+    }
+  }
+
+  void navigateToDashboard(Map<String, dynamic>? user) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DashBoard(user: user!),
+      ),
+    );
+  }
+
+  void navigateToOnboarding() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+    );
   }
 }

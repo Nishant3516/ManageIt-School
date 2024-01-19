@@ -25,6 +25,7 @@ class StudentService {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   static Future<List<Student>?> getStudentsByClass(int classId) async {

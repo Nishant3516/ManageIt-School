@@ -3,7 +3,7 @@ import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/screens/overall_attendance_screen.dart';
-import 'package:manageit_school/screens/student_payement_search.dart.dart';
+import 'package:manageit_school/screens/student_payement_search.dart';
 import 'package:manageit_school/screens/student_profile.dart';
 
 class DashBoard extends StatefulWidget {
@@ -19,13 +19,25 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   late List<List<dynamic>> finalDashboardMenu = [];
-  // bool isUserAdmin = false;
 
   @override
   void initState() {
-    finalDashboardMenu = (!widget.user['authorities'].contains('ROLE_ADMIN'))
-        ? Constants().adminDashboardMenu
-        : Constants().studentsDashboardMenu;
+    List<dynamic> userRoles = widget.user['authorities'];
+    if (userRoles.contains('ROLE_ADMIN')) {
+      finalDashboardMenu = Constants().adminDashboardMenu;
+    } else if (userRoles.contains('ROLE_SCHOOL_ACCOUNTANT')) {
+      finalDashboardMenu = Constants().accountantDashboardMenu;
+    } else if (userRoles.contains('ROLE_SCHOOL_TEACHER')) {
+      finalDashboardMenu = Constants().schoolTeacherDashboardMenu;
+    } else if (userRoles.contains('ROLE_SCHOOL_STUDENT')) {
+      finalDashboardMenu = Constants().studentsDashboardMenu;
+    } else {
+      // Handle the case when the user has no recognized roles
+      print('No recognized role');
+      // Set a basic menu or display an error message
+      finalDashboardMenu = Constants().studentsDashboardMenu;
+    }
+
     super.initState();
   }
 

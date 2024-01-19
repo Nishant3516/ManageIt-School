@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/individual_button.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
@@ -42,6 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void initState() {
+    AuthController().clearUserData();
     _controller = PageController(initialPage: 0);
     super.initState();
   }
