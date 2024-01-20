@@ -131,7 +131,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         // Optionally, show a message to the user
       }
     } catch (e) {
-      // Handle the error, possibly show a message to the user
       print("An error occurred while adding the student: $e");
     }
 
@@ -267,7 +266,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
               const YMargin(height: 16),
               ElevatedButton(
                 onPressed: _addStudent,
-                child: const Text('Add Student'),
+                child: const Text('Save'),
               ),
             ],
           ),

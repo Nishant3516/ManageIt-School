@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/models/models.dart';
-import 'package:manageit_school/screens/overall_attendance_screen.dart';
-import 'package:manageit_school/screens/student_payement_search.dart';
 import 'package:manageit_school/screens/student_profile.dart';
 
 class DashBoard extends StatefulWidget {
@@ -19,6 +17,7 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   late List<List<dynamic>> finalDashboardMenu = [];
+  final List<List<dynamic>> studentsMainBox = Constants().studentsMainBox;
 
   @override
   void initState() {
@@ -40,21 +39,6 @@ class _DashBoardState extends State<DashBoard> {
 
     super.initState();
   }
-
-  final List<List<dynamic>> studentsMainBox = [
-    [
-      'assets/icons/ic_attendance.png',
-      'Attendance',
-      '80.39 %',
-      const OverallAttendanceScreen()
-    ],
-    [
-      'assets/icons/ic_fees_due.png',
-      'Fees due',
-      '₹ 6400',
-      const StudentPaymentSearchScreen()
-    ],
-  ];
 
   final Student student = Student(
     firstName: 'John',

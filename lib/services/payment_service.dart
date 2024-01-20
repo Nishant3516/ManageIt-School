@@ -3,9 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/models/payment.dart';
 
-const String token = Constants.token;
-
 class PaymentService {
+  final String token = Constants.token;
   Future<List<Payment>> getPaymentDetailsByID(int studentId) async {
     try {
       final url =
