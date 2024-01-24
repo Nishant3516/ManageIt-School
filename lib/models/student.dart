@@ -1,11 +1,11 @@
+import 'dart:typed_data';
 import 'package:manageit_school/models/class.dart';
 
 class Student {
   final int? id;
-  final String? studentPhoto;
+  final Uint8List? studentPhoto;
   final String? studentPhotoContentType;
   final String? studentPhotoLink;
-  // final String studentId;
   final String firstName;
   final String? gender;
   final String? lastName;
@@ -36,7 +36,6 @@ class Student {
   final dynamic studentClassWorkTracks;
 
   Student({
-    // required this.studentId,
     required this.firstName,
     required this.schoolClass,
     this.startDate,

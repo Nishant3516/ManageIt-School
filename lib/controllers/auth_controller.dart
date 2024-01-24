@@ -25,7 +25,7 @@ class AuthController {
       }
       return '';
     } catch (e) {
-      // print(e);
+      print(e);
     }
     return null;
   }

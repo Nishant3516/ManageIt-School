@@ -5,7 +5,7 @@ import 'package:manageit_school/models/student.dart';
 
 class ApiService {
   static Future<List<Class>> fetchClasses(String token) async {
-    const String apiUrl = "https://candeylabs.com/api/school-classes";
+    const String apiUrl = "https://candeylabs.com/api/school-classes/";
 
     final response = await http.get(
       Uri.parse(apiUrl),
@@ -43,16 +43,15 @@ class ApiService {
         body: jsonEncode(postData),
       );
 
+      print(jsonEncode(postData));
+
       if (response.statusCode == 201) {
         print(response.body);
       } else {
-        print("Failed to load data. Status Code: ${response.statusCode}");
         print("Response Body: ${response.body}");
-        throw Exception('Failed to load data');
       }
     } catch (e) {
       print("An error occurred: $e");
-      throw Exception('Failed to load data');
     }
   }
 }

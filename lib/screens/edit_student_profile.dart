@@ -17,6 +17,12 @@ class EditStudentProfileScreen extends StatefulWidget {
 }
 
 class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
+  final List<String> genderOptions = [
+    'Male',
+    'Female',
+    'Other',
+    'Wont Declare'
+  ];
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
   late TextEditingController rollNumberController;
@@ -31,11 +37,11 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
   late TextEditingController regNumberController;
   late TextEditingController endDateController;
   File? _image;
+  String? _selectedGender;
 
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with current data
     firstNameController = TextEditingController(text: widget.student.firstName);
     lastNameController = TextEditingController(text: widget.student.lastName);
     rollNumberController =
@@ -110,6 +116,23 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
               _buildTextField('First Name', firstNameController),
               _buildTextField('Last Name', lastNameController),
               _buildTextField('Roll Number', rollNumberController),
+              DropdownButtonFormField<String>(
+                value: _selectedGender,
+                items: genderOptions.map((String gender) {
+                  return DropdownMenuItem<String>(
+                    value: gender,
+                    child: Text(gender),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedGender = newValue;
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Gender',
+                ),
+              ),
               _buildTextField('Phone Number', phoneNumberController),
               _buildTextField('Address Line 1', addressLine1Controller),
               _buildTextField('Address Line 2', addressLine2Controller),
@@ -119,7 +142,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
               _buildTextField('Blood Group', bloodGroupController),
               _buildTextField('Admission Date', admissionDateController),
               _buildTextField('Registration Number', regNumberController),
-              _buildTextField('End Date', endDateController),
+              // _buildTextField('End Date', endDateController),
               const YMargin(height: 20),
               ElevatedButton(
                 onPressed: _saveChanges,

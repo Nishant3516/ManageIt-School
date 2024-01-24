@@ -44,4 +44,30 @@ class StudentService {
       throw Exception('Failed to load students');
     }
   }
+
+  Future<void> deleteStudentById(int studentId, String token) async {
+    final String apiUrl =
+        "https://candeylabs.com/api/class-students/$studentId";
+
+    try {
+      final response = await http.delete(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 204) {
+        // Student deleted successfully
+        print("Student with ID $studentId deleted successfully.");
+      } else {
+        // Failed to delete student
+        print("Failed to delete student. Status Code: ${response.statusCode}");
+        print("Response Body: ${response.body}");
+      }
+    } catch (e) {
+      // An error occurred while making the request
+      print("An error occurred: $e");
+    }
+  }
 }

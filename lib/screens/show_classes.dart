@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/screens/add_student.dart';
 import 'package:manageit_school/screens/show_class_students.dart';
 import 'package:manageit_school/services/api_service.dart';
 import 'dart:math';
@@ -36,18 +35,6 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Classes"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: ElevatedButton.icon(
-                onPressed: () {
-                  NavigatorWidget()
-                      .screenReplacement(context, const AddStudentScreen());
-                },
-                icon: const Icon(Icons.add_outlined),
-                label: const Text('Add Student')),
-          )
-        ],
       ),
       body: FutureBuilder<List<Class>>(
         future: loadClasses(),
@@ -66,29 +53,49 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
             );
           } else {
             classes = snapshot.data!;
-            return Container(
-              // margin: const EdgeInsets.only(top: 20),
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: ListView.builder(
-                itemCount: classes!.length,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0.0, 1.0),
-                      end: const Offset(0.0, 0.0),
-                    ).animate(
-                      CurvedAnimation(
-                        curve: Curves.easeIn,
-                        parent: AnimationController(
-                          vsync: this,
-                          duration: const Duration(milliseconds: 700),
-                        )..forward(),
-                      ),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text('Total Classes'),
+                            Text(classes!.length.toString())
+                          ],
+                        )
+                      ],
                     ),
-                    child: IndClassBox(indclass: classes![index]),
-                  );
-                },
+                  ),
+                  Container(
+                    // margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: ListView.builder(
+                      itemCount: classes!.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0.0, 1.0),
+                            end: const Offset(0.0, 0.0),
+                          ).animate(
+                            CurvedAnimation(
+                              curve: Curves.easeIn,
+                              parent: AnimationController(
+                                vsync: this,
+                                duration: const Duration(milliseconds: 700),
+                              )..forward(),
+                            ),
+                          ),
+                          child: IndClassBox(indclass: classes![index]),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             );
           }
@@ -130,7 +137,10 @@ class IndClassBox extends StatelessWidget {
       child: ListTile(
         onTap: () {
           NavigatorWidget().screenReplacement(
-              context, ShowClassStudentsScreen(classId: indclass.id));
+              context,
+              ShowClassStudentsScreen(
+                classId: indclass.id,
+              ));
         },
         contentPadding: const EdgeInsets.all(10),
         style: ListTileStyle.list,

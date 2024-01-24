@@ -3,8 +3,10 @@ import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/individual_button.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
+import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/dashboard.dart';
 import 'package:manageit_school/screens/forgot_password.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,12 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userToken != null) {
           await AuthController().fetchAndStoreUserDetails(userToken);
           userData = await AuthController().fetchUserDetailsfromSP();
-          print(userData);
+
+          // Update user details to the provider
+          Provider.of<UserProvider>(context, listen: false)
+              .setUserDetails(userData);
+
           NavigatorWidget().screenPushReplacement(
-              context,
-              DashBoard(
-                user: userData!,
-              ));
+            context,
+            const DashBoard(),
+          );
         } else {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -117,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: userNameController,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
+                              enableSuggestions: false,
                               validator: (value) {
                                 final RegExp userNameRegExp =
                                     RegExp(r'^[a-zA-Z][a-zA-Z0-9_-]{2,19}$');
@@ -151,6 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: passwordController,
                               obscureText: !isPasswordVisible,
                               autocorrect: false,
+                              enableSuggestions: false,
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
                                 prefixIcon:

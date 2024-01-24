@@ -3,11 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/x_margin.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/models/school.dart';
 import 'package:manageit_school/models/student.dart';
-import 'package:manageit_school/models/tenant.dart';
+import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/edit_student_profile.dart';
+import 'package:provider/provider.dart';
 
 class StudentProfileScreen extends StatelessWidget {
   final Student student;
@@ -15,6 +14,8 @@ class StudentProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isUserStudent =
+        Provider.of<UserProvider>(context).isUserStudent();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -57,38 +58,14 @@ class StudentProfileScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () {
-                      NavigatorWidget().screenReplacement(
-                          context,
-                          EditStudentProfileScreen(
-                            student: Student(
-                              firstName: 'John',
-                              lastName: 'Doe',
-                              rollNumber: '12345',
-                              phoneNumber: '1234567890',
-                              startDate: DateTime.now().toString(),
-                              addressLine1: '123 Main St',
-                              fatherName: 'John Doe Sr.',
-                              schoolClass: Class(
-                                id: 1,
-                                className: 'Class 10',
-                                classLongName: 'Class 10A',
-                                school: School(
-                                  id: 1,
-                                  groupName: 'School Group',
-                                  schoolName: 'My School',
-                                  tenant: Tenant(
-                                    id: 1,
-                                    tenantName: 'My Tenant',
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ));
-                    },
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
+                  if (!isUserStudent)
+                    IconButton(
+                      onPressed: () {
+                        NavigatorWidget().screenReplacement(context,
+                            EditStudentProfileScreen(student: student));
+                      },
+                      icon: const Icon(Icons.edit_outlined),
+                    ),
                 ],
               ),
               Column(
@@ -151,7 +128,7 @@ class StudentProfileScreen extends StatelessWidget {
         Detail('Registration Number', student.regNumber ?? 'NA'),
       ],
       [
-        Detail('End Date', student.endDate ?? 'NA'),
+        // Detail('End Date', student.endDate ?? 'NA'),
         Detail('Class', student.schoolClass.className),
       ],
     ];

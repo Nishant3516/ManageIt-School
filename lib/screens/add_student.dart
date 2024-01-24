@@ -14,10 +14,8 @@ class AddStudentScreen extends StatefulWidget {
 }
 
 class _AddStudentScreenState extends State<AddStudentScreen> {
-  final List<String> genderOptions = ['Male', 'Female', 'Other'];
   List<Class> _classes = [];
   Class? _selectedClass;
-  final TextEditingController _studentIdController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _rollNumberController = TextEditingController();
@@ -25,7 +23,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController _addressLine1Controller = TextEditingController();
   final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
-  String? _selectedGender;
+  final TextEditingController _dateOfBirthController = TextEditingController();
 
   @override
   void initState() {
@@ -56,7 +54,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
   @override
   void dispose() {
-    _studentIdController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _rollNumberController.dispose();
@@ -64,13 +61,12 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     _addressLine1Controller.dispose();
     _fatherNameController.dispose();
     _startDateController.dispose();
+    _dateOfBirthController.dispose();
 
     super.dispose();
   }
 
   void _addStudent() async {
-    // Get input values
-    String studentId = _studentIdController.text;
     String firstName = _firstNameController.text;
     String lastName = _lastNameController.text;
     String rollNumber = _rollNumberController.text;
@@ -78,9 +74,11 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     String addressLine1 = _addressLine1Controller.text;
     String fatherName = _fatherNameController.text;
     DateTime startDate;
+    DateTime dateOfBirth;
 
     try {
       startDate = DateFormat('dd-MM-yyyy').parse(_startDateController.text);
+      dateOfBirth = DateFormat('dd-MM-yyyy').parse(_dateOfBirthController.text);
     } catch (e) {
       print("Error parsing start date: $e");
       // Handle the error, possibly show a message to the user
@@ -88,14 +86,12 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     }
 
     // Perform additional input validation as needed
-    if (studentId.isEmpty ||
-        firstName.isEmpty ||
+    if (firstName.isEmpty ||
         lastName.isEmpty ||
         rollNumber.isEmpty ||
         phoneNumber.isEmpty ||
         addressLine1.isEmpty ||
         fatherName.isEmpty ||
-        _selectedGender == null ||
         _selectedClass == null) {
       // Show a message to the user indicating that all fields are required
       print("All fields are required");
@@ -104,16 +100,15 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
     // Create student object
     Student newStudent = Student(
-      firstName: firstName,
-      lastName: lastName,
-      rollNumber: rollNumber,
-      phoneNumber: phoneNumber,
-      addressLine1: addressLine1,
-      fatherName: fatherName,
-      // gender: _selectedGender!,
-      startDate: startDate.toString(),
-      schoolClass: _selectedClass!,
-    );
+        firstName: firstName,
+        lastName: lastName,
+        rollNumber: rollNumber,
+        phoneNumber: phoneNumber,
+        addressLine1: addressLine1,
+        fatherName: fatherName,
+        startDate: startDate.toIso8601String(),
+        schoolClass: _selectedClass!,
+        dateOfBirth: dateOfBirth.toIso8601String());
 
     try {
       // Obtain user token
@@ -135,6 +130,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     }
 
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -144,8 +140,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                // Navigator.of(context).pop();
-                // Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -186,12 +182,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     ),
               const YMargin(height: 16),
               TextField(
-                controller: _studentIdController,
-                decoration: const InputDecoration(
-                  labelText: 'Student ID',
-                ),
-              ),
-              TextField(
                 controller: _firstNameController,
                 decoration: const InputDecoration(
                   labelText: 'First Name',
@@ -227,23 +217,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   labelText: 'Father Name',
                 ),
               ),
-              DropdownButtonFormField<String>(
-                value: _selectedGender,
-                items: genderOptions.map((String gender) {
-                  return DropdownMenuItem<String>(
-                    value: gender,
-                    child: Text(gender),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedGender = newValue;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
-                ),
-              ),
               const YMargin(height: 16),
               Row(
                 children: [
@@ -260,6 +233,24 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   IconButton(
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () => _selectDate(context),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _dateOfBirthController,
+                      readOnly: true,
+                      onTap: () => _selectDate(context),
+                      decoration: const InputDecoration(
+                        labelText: 'Date of Birth',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () => _selectDateOfBirth(context),
                   ),
                 ],
               ),
@@ -286,6 +277,22 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     if (pickedDate != null && pickedDate != DateTime.now()) {
       setState(() {
         _startDateController.text = DateFormat('dd-MM-yyyy').format(pickedDate);
+      });
+    }
+  }
+
+  Future<void> _selectDateOfBirth(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != DateTime.now()) {
+      setState(() {
+        _dateOfBirthController.text =
+            DateFormat('dd-MM-yyyy').format(pickedDate);
       });
     }
   }

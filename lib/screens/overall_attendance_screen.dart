@@ -116,7 +116,7 @@ class OverallAttendanceScreen extends StatelessWidget {
               ),
               const YMargin(),
               ListView.builder(
-                itemCount: 12, // Assuming 12 months
+                itemCount: 12,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {

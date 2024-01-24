@@ -1,7 +1,7 @@
 import 'package:manageit_school/screens/change_password.dart';
 import 'package:manageit_school/screens/date_sheet.dart';
 import 'package:manageit_school/screens/leave_application.dart';
-import 'package:manageit_school/screens/onboarding.dart';
+import 'package:manageit_school/screens/login.dart';
 import 'package:manageit_school/screens/result.dart';
 import 'package:manageit_school/screens/school_gallery.dart';
 import 'package:manageit_school/screens/school_holiday.dart';
@@ -52,7 +52,7 @@ class Constants {
     ],
     ['assets/icons/ic_password.png', 'Reset Password', ChangePasswordScreen()],
     // ['assets/icons/ic_event.png', 'Events', EventsScreen()],
-    ['assets/icons/ic_logout.png', 'Logout', const OnboardingScreen()],
+    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> adminDashboardMenu = [
@@ -66,7 +66,12 @@ class Constants {
       'Manage\nPayments',
       const StudentPaymentSearchScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const OnboardingScreen()],
+    [
+      'assets/icons/ic_attendance.png',
+      'Manage\nAttendance',
+      const OverallAttendanceScreen()
+    ],
+    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> accountantDashboardMenu = [
@@ -80,7 +85,7 @@ class Constants {
       'Manage\nPayments',
       const StudentPaymentSearchScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const OnboardingScreen()],
+    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> schoolTeacherDashboardMenu = [
@@ -94,6 +99,6 @@ class Constants {
       'Manage\nPayments',
       const StudentPaymentSearchScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const OnboardingScreen()],
+    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 }
