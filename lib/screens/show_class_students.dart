@@ -11,11 +11,13 @@ import 'package:manageit_school/services/student_service.dart';
 import 'package:provider/provider.dart';
 
 class ShowClassStudentsScreen extends StatefulWidget {
+  final String classname;
   final int classId;
 
   const ShowClassStudentsScreen({
     super.key,
     required this.classId,
+    required this.classname,
   });
 
   @override
@@ -29,12 +31,19 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     fetchClassStudents();
   }
 
   Future<void> fetchClassStudents() async {
+    final String? userToken = Provider.of<UserProvider>(context).userToken;
+
     final List<Student>? classStudents =
-        await StudentService.getStudentsByClass(widget.classId);
+        await StudentService.getStudentsByClass(widget.classId, userToken!);
 
     if (classStudents != null) {
       setState(() {
@@ -49,12 +58,9 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isUserStudent =
-        Provider.of<UserProvider>(context).isUserStudent();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Class Students'),
+        title: Text(widget.classname),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -90,8 +96,9 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
                         itemCount: students!.length,
                         itemBuilder: (context, index) {
                           return IndStudentBox(
-                              indStudent: students![index],
-                              isUserStudent: isUserStudent);
+                            students: students,
+                            indStudent: students![index],
+                          );
                         },
                       ),
                     ),
@@ -104,13 +111,13 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
 }
 
 class IndStudentBox extends StatefulWidget {
-  final bool isUserStudent;
   final Student indStudent;
+  final List<Student>? students;
 
   const IndStudentBox({
     super.key,
     required this.indStudent,
-    required this.isUserStudent,
+    required this.students,
   });
 
   @override
@@ -132,6 +139,8 @@ class _IndStudentBoxState extends State<IndStudentBox> {
   @override
   Widget build(BuildContext context) {
     Color boxColor = _getRandomPastelColor();
+    final bool isUserStudent =
+        Provider.of<UserProvider>(context).isUserStudent();
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
@@ -142,13 +151,13 @@ class _IndStudentBoxState extends State<IndStudentBox> {
       child: ListTile(
         onTap: () {
           NavigatorWidget().screenReplacement(
-              context, StudentProfileScreen(student: widget.indStudent));
+              context, StudentProfileScreen(studentId: widget.indStudent.id!));
         },
         contentPadding: const EdgeInsets.all(10),
-        style: ListTileStyle.list,
-        leading: const CircleAvatar(
+        leading: CircleAvatar(
           child: CircleAvatar(
             radius: 30,
+            child: Text(widget.indStudent.firstName[0]),
           ),
         ),
         subtitle: Text(widget.indStudent.id!.toString()),
@@ -156,13 +165,15 @@ class _IndStudentBoxState extends State<IndStudentBox> {
           '${toTitleCase(widget.indStudent.firstName)} ${(widget.indStudent.lastName != null) ? toTitleCase(widget.indStudent.lastName!) : ' '}',
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        trailing: (widget.isUserStudent)
+        trailing: (!isUserStudent)
             ? PopupMenuButton<String>(
                 onSelected: (String value) {
                   if (value == 'edit') {
                     NavigatorWidget().screenReplacement(context,
                         EditStudentProfileScreen(student: widget.indStudent));
-                  } else if (value == 'delete') {}
+                  } else if (value == 'delete') {
+                    // deleteStudent(widget.indStudent.id!);
+                  }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
@@ -194,28 +205,42 @@ class _IndStudentBoxState extends State<IndStudentBox> {
     return name[0].toUpperCase() + name.substring(1).toLowerCase();
   }
 
-  void deleteSTudent(int studentIdToDelete, String authToken) async {
-    // Call the deleteStudentById function
-    await StudentService().deleteStudentById(studentIdToDelete, authToken);
+  // void deleteStudent(int studentIdToDelete) async {
+  //   final String? userToken = Provider.of<UserProvider>(context).userToken;
 
-    // Show a dialog box on successful deletion
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Success'),
-          content: const Text('Student deleted successfully.'),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                // Close the dialog box
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  //   // Save a copy of the student being deleted for Undo
+  //   Student deletedStudent = widget.indStudent;
+
+  //   // Call the deleteStudentById function
+  //   await StudentService().deleteStudentById(studentIdToDelete, userToken!);
+
+  //   // Remove the student from the list immediately
+  //   try {
+  //     setState(() {
+  //       widget.students?.remove(widget.indStudent);
+  //     });
+  //   } catch (e) {
+  //     print("Error removing student: $e");
+  //   }
+
+  //   // Show a Snackbar with an Undo button
+  //   final ScaffoldMessengerState scaffoldMessenger =
+  //       ScaffoldMessenger.of(context);
+
+  //   // Show the Snackbar with an Undo button
+  //   scaffoldMessenger.showSnackBar(
+  //     SnackBar(
+  //       content: const Text('Student deleted'),
+  //       action: SnackBarAction(
+  //         label: 'Undo',
+  //         onPressed: () {
+  //           // If Undo is pressed, add the student back to the list
+  //           setState(() {
+  //             widget.students?.insert(0, deletedStudent);
+  //           });
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 }

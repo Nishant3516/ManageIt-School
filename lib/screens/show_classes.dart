@@ -44,6 +44,7 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
+            print(snapshot.error);
             return const Center(
               child: Text("Error loading classes"),
             );
@@ -62,7 +63,7 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
                       children: [
                         Column(
                           children: [
-                            Text('Total Classes'),
+                            const Text('Total Classes'),
                             Text(classes!.length.toString())
                           ],
                         )
@@ -140,6 +141,7 @@ class IndClassBox extends StatelessWidget {
               context,
               ShowClassStudentsScreen(
                 classId: indclass.id,
+                classname: indclass.classLongName,
               ));
         },
         contentPadding: const EdgeInsets.all(10),

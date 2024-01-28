@@ -153,7 +153,7 @@ class _DashBoardState extends State<DashBoard> {
                                 context,
                                 StudentProfileScreen(
                                   // student: Student.fromJson(user!),
-                                  student: student,
+                                  studentId: student.id!,
                                 ),
                               );
                             },

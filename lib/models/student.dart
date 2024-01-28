@@ -1,9 +1,8 @@
-import 'dart:typed_data';
 import 'package:manageit_school/models/class.dart';
 
 class Student {
   final int? id;
-  final Uint8List? studentPhoto;
+  final String? studentPhoto;
   final String? studentPhotoContentType;
   final String? studentPhotoLink;
   final String firstName;
@@ -72,18 +71,38 @@ class Student {
 
   Map<String, dynamic> toJson() {
     return {
-      // 'id': id,
-      // 'studentId': studentId,
+      'id': id,
+      'studentPhoto': studentPhoto,
+      'studentPhotoContentType': studentPhotoContentType,
+      'studentPhotoLink': studentPhotoLink,
       'firstName': firstName,
+      'gender': gender,
       'lastName': lastName,
       'rollNumber': rollNumber,
       'phoneNumber': phoneNumber,
+      'bloodGroup': bloodGroup,
+      'dateOfBirth': dateOfBirth,
+      'startDate': startDate,
       'addressLine1': addressLine1,
+      'addressLine2': addressLine2,
+      'nickName': nickName,
       'fatherName': fatherName,
-      'gender': gender,
-      'startDate': startDate, // Convert DateTime to String
-      'schoolClass': schoolClass.toJson(), // Convert Class to JSON
-      // ... include other fields as needed
+      'motherName': motherName,
+      'email': email,
+      'admissionDate': admissionDate,
+      'regNumber': regNumber,
+      'endDate': endDate,
+      'createDate': createDate,
+      'lastModified': lastModified,
+      'cancelDate': cancelDate,
+      'schoolClass': schoolClass.toJson(),
+      'studentDiscounts': studentDiscounts,
+      'studentAdditionalCharges': studentAdditionalCharges,
+      'studentChargesSummaries': studentChargesSummaries,
+      'studentPayments': studentPayments,
+      'studentAttendences': studentAttendences,
+      'studentHomeWorkTracks': studentHomeWorkTracks,
+      'studentClassWorkTracks': studentClassWorkTracks,
     };
   }
 

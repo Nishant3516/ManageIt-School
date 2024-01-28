@@ -15,7 +15,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    checkUserLoggedIn();
+    Future.delayed(const Duration(seconds: 2), () {
+      checkUserLoggedIn();
+    });
   }
 
   Future<void> checkUserLoggedIn() async {
@@ -27,24 +29,22 @@ class _SplashScreenState extends State<SplashScreen> {
       // Fetch user information based on the token
       final Map<String, dynamic>? userDetails =
           await authController.fetchUserDetails(token);
-      navigateToDashboard(userDetails!);
+      if (userDetails != null) {
+        navigateToDashboard(userDetails);
+      } else {
+        navigateToLoginScreen();
+      }
     } else {
       navigateToLoginScreen();
     }
   }
 
   void navigateToDashboard(Map<String, dynamic> user) {
-    NavigatorWidget().screenPushReplacement(
-      context,
-      DashBoard(),
-    );
+    NavigatorWidget().screenPushReplacement(context, const DashBoard());
   }
 
   void navigateToLoginScreen() {
-    NavigatorWidget().screenPushReplacement(
-      context,
-      const LoginScreen(),
-    );
+    NavigatorWidget().screenPushReplacement(context, const LoginScreen());
   }
 
   @override

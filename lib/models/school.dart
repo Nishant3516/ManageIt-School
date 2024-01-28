@@ -47,7 +47,7 @@ class School {
       'createDate': createDate,
       'lastModified': lastModified,
       'cancelDate': cancelDate,
-      'tenant': tenant!.toJson(), // Convert Tenant to JSON
+      'tenant': tenant != null ? tenant!.toJson() : null,
     };
   }
 }

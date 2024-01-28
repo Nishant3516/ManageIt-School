@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Update user details to the provider
           Provider.of<UserProvider>(context, listen: false)
-              .setUserDetails(userData);
+              .setUserDetails(userData, userToken);
 
           NavigatorWidget().screenPushReplacement(
             context,

@@ -120,34 +120,39 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         await ApiService.addStudent(userToken, newStudent);
         // Optionally, show a success message to the user
         print("Student added successfully");
+
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Student added successfully.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } else {
         // Handle the case where user token is null (user not logged in)
         print("User not logged in");
-        // Optionally, show a message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unable to add user')),
+        );
       }
     } catch (e) {
       print("An error occurred while adding the student: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to add user')),
+      );
     }
-
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Success'),
-          content: const Text('Student added successfully.'),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override

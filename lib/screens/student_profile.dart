@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
@@ -6,80 +7,140 @@ import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/student.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/edit_student_profile.dart';
+import 'package:manageit_school/services/student_service.dart';
 import 'package:provider/provider.dart';
 
-class StudentProfileScreen extends StatelessWidget {
-  final Student student;
-  const StudentProfileScreen({super.key, required this.student});
+class StudentProfileScreen extends StatefulWidget {
+  final int studentId;
+  const StudentProfileScreen({
+    super.key,
+    required this.studentId,
+  });
+
+  @override
+  State<StudentProfileScreen> createState() => _StudentProfileScreenState();
+}
+
+class _StudentProfileScreenState extends State<StudentProfileScreen> {
+  Student? student;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getStudent(widget.studentId);
+  }
+
+  Future<void> getStudent(int studentId) async {
+    final String? userToken = Provider.of<UserProvider>(context).userToken;
+
+    final result =
+        await StudentService.getStudentDetailsById(studentId, userToken!);
+    if (result != null) {
+      setState(() {
+        student = result;
+      });
+    } else {
+      print('Error getting the data');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final bool isUserStudent =
         Provider.of<UserProvider>(context).isUserStudent();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text('Student Profile'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.black,
-                        // child: Image.memory(student.studentPhoto!),
-                      ),
-                      const XMargin(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${student.firstName} ${student.lastName}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+      body: (student == null)
+          ? const CircularProgressIndicator()
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.2,
+                              child: CircleAvatar(
+                                radius: 35,
+                                backgroundColor: Colors.black,
+                                child: (student!.studentPhoto != null)
+                                    ? Image.memory(
+                                        base64Decode(student!.studentPhoto!))
+                                    : Text(
+                                        student!.firstName[0],
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 24),
+                                      ),
+                              ),
                             ),
+                            const XMargin(width: 15),
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.5,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${student!.firstName} ${student!.lastName}',
+                                    softWrap: true,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Roll No: ${student!.rollNumber}',
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (!isUserStudent)
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                builder: (context) =>
+                                    EditStudentProfileScreen(student: student!),
+                              ))
+                                  .then((_) {
+                                getStudent(widget.studentId);
+                              });
+                            },
+                            icon: const Icon(Icons.edit_outlined),
                           ),
-                          Text(
-                            'Roll No: ${student.rollNumber}',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (!isUserStudent)
-                    IconButton(
-                      onPressed: () {
-                        NavigatorWidget().screenReplacement(context,
-                            EditStudentProfileScreen(student: student));
-                      },
-                      icon: const Icon(Icons.edit_outlined),
+                      ],
                     ),
-                ],
+                    Column(
+                      children: [
+                        const YMargin(height: 20),
+                        _buildSection(
+                            'Personal Details', _getPersonalDetails()),
+                        const YMargin(height: 20),
+                        _buildSection(
+                            'Academic Details', _getAcademicDetails()),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  const YMargin(height: 20),
-                  _buildSection('Personal Details', _getPersonalDetails()),
-                  const YMargin(height: 20),
-                  _buildSection('Academic Details', _getAcademicDetails()),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -100,23 +161,23 @@ class StudentProfileScreen extends StatelessWidget {
   List<List<Detail>> _getPersonalDetails() {
     return [
       [
-        Detail('Gender', student.gender ?? 'NA'),
+        Detail('Gender', student!.gender ?? 'NA'),
         Detail(
             'Date of Birth',
-            (student.dateOfBirth != null)
+            (student!.dateOfBirth != null)
                 ? DateFormat('MM/dd/yyyy')
-                    .format(DateTime.parse(student.dateOfBirth!))
+                    .format(DateTime.parse(student!.dateOfBirth!))
                 : 'NA'),
       ],
-      [Detail('Mobile Number', student.phoneNumber ?? 'NA')],
-      [Detail('E-mail', student.email ?? 'NA')],
+      [Detail('Mobile Number', student!.phoneNumber ?? 'NA')],
+      [Detail('E-mail', student!.email ?? 'NA')],
       [
-        Detail("Father's Name", student.fatherName ?? 'NA'),
-        Detail("Mother's Name", student.motherName ?? 'NA'),
+        Detail("Father's Name", student!.fatherName ?? 'NA'),
+        Detail("Mother's Name", student!.motherName ?? 'NA'),
       ],
       [
-        Detail("Parent's Mobile", student.phoneNumber ?? 'NA'),
-        Detail('Blood Group', student.bloodGroup ?? 'NA'),
+        Detail("Parent's Mobile", student!.phoneNumber ?? 'NA'),
+        Detail('Blood Group', student!.bloodGroup ?? 'NA'),
       ],
     ];
   }
@@ -124,12 +185,12 @@ class StudentProfileScreen extends StatelessWidget {
   List<List<Detail>> _getAcademicDetails() {
     return [
       [
-        Detail('Admission Date', student.admissionDate ?? 'NA'),
-        Detail('Registration Number', student.regNumber ?? 'NA'),
+        Detail('Admission Date', student!.admissionDate ?? 'NA'),
+        Detail('Registration Number', student!.regNumber ?? 'NA'),
       ],
       [
-        // Detail('End Date', student.endDate ?? 'NA'),
-        Detail('Class', student.schoolClass.className),
+        Detail('Class', student!.schoolClass.className),
+        Detail('Total Attendance', student!.studentAttendences ?? 'NA'),
       ],
     ];
   }
@@ -161,7 +222,11 @@ class Detail {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(name, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+          Text(
+            name,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            softWrap: true,
+          ),
           Text(
             value,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

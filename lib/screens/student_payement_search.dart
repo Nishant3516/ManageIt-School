@@ -5,9 +5,11 @@ import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/class.dart';
 import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/payment_details.dart';
 import 'package:manageit_school/services/api_service.dart';
 import 'package:manageit_school/services/student_service.dart';
+import 'package:provider/provider.dart';
 
 class StudentPaymentSearchScreen extends StatefulWidget {
   const StudentPaymentSearchScreen({super.key});
@@ -54,11 +56,13 @@ class StudentPaymentSearchScreenState
   }
 
   Future<void> fetchStudentsFromClass(int classId) async {
+    final String? userToken = Provider.of<UserProvider>(context).userToken;
+
     setState(() {
       selectedStudent = null;
     });
     final List<Student>? classStudents =
-        await StudentService.getStudentsByClass(classId);
+        await StudentService.getStudentsByClass(classId, userToken!);
     if (classStudents != null) {
       setState(() {
         students = classStudents;
@@ -86,12 +90,15 @@ class StudentPaymentSearchScreenState
   }
 
   Future<void> fetchStudentFromID(int? id) async {
+    final String? userToken = Provider.of<UserProvider>(context).userToken;
+
     setState(() {
       selectedStudent = null;
     });
     // Check if the entered ID is valid
     if (id != null && id > 0) {
-      final Student? result = await StudentService.getStudentById(id);
+      final Student? result =
+          await StudentService.getStudentDetailsById(id, userToken!);
       if (result != null) {
         print(result);
         setState(() {
