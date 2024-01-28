@@ -4,7 +4,9 @@ import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/class.dart';
 import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/screens/screens.dart';
 import 'package:manageit_school/services/api_service.dart';
+import 'package:manageit_school/services/services.dart';
 
 class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
@@ -24,6 +26,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
+  final _addStudentFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -76,83 +79,87 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     DateTime startDate;
     DateTime dateOfBirth;
 
-    try {
-      startDate = DateFormat('dd-MM-yyyy').parse(_startDateController.text);
-      dateOfBirth = DateFormat('dd-MM-yyyy').parse(_dateOfBirthController.text);
-    } catch (e) {
-      print("Error parsing start date: $e");
-      // Handle the error, possibly show a message to the user
-      return;
-    }
-
     // Perform additional input validation as needed
-    if (firstName.isEmpty ||
-        lastName.isEmpty ||
-        rollNumber.isEmpty ||
-        phoneNumber.isEmpty ||
-        addressLine1.isEmpty ||
-        fatherName.isEmpty ||
-        _selectedClass == null) {
-      // Show a message to the user indicating that all fields are required
-      print("All fields are required");
-      return;
-    }
+    if (_addStudentFormKey.currentState!.validate()) {
+      try {
+        startDate = DateFormat('dd-MM-yyyy').parse(_startDateController.text);
+        dateOfBirth =
+            DateFormat('dd-MM-yyyy').parse(_dateOfBirthController.text);
+      } catch (e) {
+        print("Error parsing start date: $e");
+        return;
+      }
 
-    // Create student object
-    Student newStudent = Student(
+      Student newStudent = Student(
         firstName: firstName,
         lastName: lastName,
         rollNumber: rollNumber,
         phoneNumber: phoneNumber,
         addressLine1: addressLine1,
         fatherName: fatherName,
-        startDate: startDate.toIso8601String(),
+        startDate: DateFormat('yyyy-MM-dd').format(startDate).toString(),
         schoolClass: _selectedClass!,
-        dateOfBirth: dateOfBirth.toIso8601String());
+        dateOfBirth: '${dateOfBirth.toIso8601String().split('.')[0]}Z',
+      );
 
-    try {
-      // Obtain user token
-      final AuthController authController = AuthController();
-      final String? userToken = await authController.getToken();
+      try {
+        // Obtain user token
+        final AuthController authController = AuthController();
+        final String? userToken = await authController.getToken();
 
-      if (userToken != null) {
-        // Attempt to add the student with the user token
-        await ApiService.addStudent(userToken, newStudent);
-        // Optionally, show a success message to the user
-        print("Student added successfully");
+        if (userToken != null) {
+          // Attempt to add the student with the user token
+          final bool result =
+              await StudentService().addStudent(userToken, newStudent);
+          // Optionally, show a success message to the user
+          if (result == true) {
+            print("Student added successfully");
+          } else {
+            print("Error adding student");
+          }
 
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Success'),
-              content: const Text('Student added successfully.'),
-              actions: [
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        // Handle the case where user token is null (user not logged in)
-        print("User not logged in");
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Success'),
+                content: const Text('Student added successfully.'),
+                actions: [
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Handle the case where user token is null (user not logged in)
+          print("User not logged in");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unable to add user')),
+          );
+        }
+      } catch (e) {
+        print("An error occurred while adding the student: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Unable to add user')),
         );
       }
-    } catch (e) {
-      print("An error occurred while adding the student: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unable to add user')),
-      );
+    } else {
+      print("All fields are required");
     }
+  }
+
+  String? _validateDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select a date';
+    }
+    return null;
   }
 
   @override
@@ -164,107 +171,138 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _selectedClass == null
-                  ? const CircularProgressIndicator()
-                  : DropdownButtonFormField<Class>(
-                      value: _selectedClass,
-                      items: _classes.map((Class schoolClass) {
-                        return DropdownMenuItem<Class>(
-                          value: schoolClass,
-                          child: Text(schoolClass.className),
-                        );
-                      }).toList(),
-                      onChanged: (Class? newValue) {
-                        setState(() {
-                          _selectedClass = newValue!;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Class',
+          child: Form(
+            key: _addStudentFormKey,
+            child: Column(
+              children: [
+                _selectedClass == null
+                    ? const CircularProgressIndicator()
+                    : DropdownButtonFormField<Class>(
+                        value: _selectedClass,
+                        items: _classes.map((Class schoolClass) {
+                          return DropdownMenuItem<Class>(
+                            value: schoolClass,
+                            child: Text(schoolClass.className),
+                          );
+                        }).toList(),
+                        onChanged: (Class? newValue) {
+                          setState(() {
+                            _selectedClass = newValue!;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Class',
+                        ),
+                      ),
+                const YMargin(height: 16),
+                TextFormField(
+                  controller: _firstNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'First Name',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter first name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _lastNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Last Name',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter last name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _rollNumberController,
+                  decoration: const InputDecoration(
+                    labelText: 'Roll Number',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter roll number';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _rollNumberController,
+                  decoration: const InputDecoration(
+                    labelText: 'Address Line 1',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter address line 1';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _phoneNumberController,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone Number',
+                  ),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter phone number';
+                    }
+                    // Add additional phone number validation if needed
+                    return null;
+                  },
+                ),
+                const YMargin(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _startDateController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: const InputDecoration(
+                          labelText: 'Start Date',
+                        ),
+                        validator: _validateDate,
                       ),
                     ),
-              const YMargin(height: 16),
-              TextField(
-                controller: _firstNameController,
-                decoration: const InputDecoration(
-                  labelText: 'First Name',
+                    IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context),
+                    ),
+                  ],
                 ),
-              ),
-              TextField(
-                controller: _lastNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Last Name',
-                ),
-              ),
-              TextField(
-                controller: _rollNumberController,
-                decoration: const InputDecoration(
-                  labelText: 'Roll Number',
-                ),
-              ),
-              TextField(
-                controller: _phoneNumberController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                ),
-              ),
-              TextField(
-                controller: _addressLine1Controller,
-                decoration: const InputDecoration(
-                  labelText: 'Address Line 1',
-                ),
-              ),
-              TextField(
-                controller: _fatherNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Father Name',
-                ),
-              ),
-              const YMargin(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _startDateController,
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: const InputDecoration(
-                        labelText: 'Start Date',
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _dateOfBirthController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: const InputDecoration(
+                          labelText: 'Date of Birth',
+                        ),
+                        validator: _validateDate,
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _dateOfBirthController,
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      decoration: const InputDecoration(
-                        labelText: 'Date of Birth',
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDateOfBirth(context),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () => _selectDateOfBirth(context),
-                  ),
-                ],
-              ),
-              const YMargin(height: 16),
-              ElevatedButton(
-                onPressed: _addStudent,
-                child: const Text('Save'),
-              ),
-            ],
+                  ],
+                ),
+                const YMargin(height: 16),
+                ElevatedButton(
+                  onPressed: _addStudent,
+                  child: const Text('Save'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -275,7 +313,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
@@ -290,7 +328,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 

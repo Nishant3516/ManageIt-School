@@ -23,6 +23,7 @@ class StudentProfileScreen extends StatefulWidget {
 
 class _StudentProfileScreenState extends State<StudentProfileScreen> {
   Student? student;
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +36,8 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
   }
 
   Future<void> getStudent(int studentId) async {
-    final String? userToken = Provider.of<UserProvider>(context).userToken;
+    final String? userToken =
+        Provider.of<UserProvider>(context, listen: false).userToken;
 
     final result =
         await StudentService.getStudentDetailsById(studentId, userToken!);
@@ -77,14 +79,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                               child: CircleAvatar(
                                 radius: 35,
                                 backgroundColor: Colors.black,
-                                child: (student!.studentPhoto != null)
-                                    ? Image.memory(
-                                        base64Decode(student!.studentPhoto!))
-                                    : Text(
+                                backgroundImage: (student!.studentPhoto != null)
+                                    ? MemoryImage(
+                                        base64Decode(student!.studentPhoto!),
+                                      )
+                                    : null,
+                                child: (student!.studentPhoto == null)
+                                    ? Text(
                                         student!.firstName[0],
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 24),
-                                      ),
+                                      )
+                                    : null,
                               ),
                             ),
                             const XMargin(width: 15),

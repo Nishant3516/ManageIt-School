@@ -29,29 +29,4 @@ class ApiService {
       return null;
     }
   }
-
-  static Future<void> addStudent(String token, Student postData) async {
-    const String apiUrl = "https://candeylabs.com/api/class-students";
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode(postData),
-      );
-
-      print(jsonEncode(postData));
-
-      if (response.statusCode == 201) {
-        print(response.body);
-      } else {
-        print("Response Body: ${response.body}");
-      }
-    } catch (e) {
-      print("An error occurred: $e");
-    }
-  }
 }

@@ -4,6 +4,33 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class StudentService {
+  Future<bool> addStudent(String token, Student postData) async {
+    const String apiUrl = "https://candeylabs.com/api/class-students/";
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(postData),
+      );
+
+      if (response.statusCode == 201) {
+        print(response.body);
+        print("Successfully added");
+        return true;
+      } else {
+        print("Response Body: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+      return false;
+    }
+  }
+
   static Future<Student?> getStudentPaymentDetailsById(
       int id, String userToken) async {
     try {

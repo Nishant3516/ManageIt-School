@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:manageit_school/constants/constants.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/student.dart';
 import 'package:manageit_school/providers/user_provider.dart';
@@ -23,24 +24,8 @@ class EditStudentProfileScreen extends StatefulWidget {
 }
 
 class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
-  final List<String> genderOptions = [
-    'Male',
-    'Female',
-    'Other',
-    'Wont Declare'
-  ];
-
-  final List<String> bloodGroups = [
-    'A_Pos',
-    'A_Neg',
-    'B_Pos',
-    'B_Neg',
-    'AB_Pos',
-    'AB_Neg',
-    'O_Pos',
-    'O_Neg'
-  ];
-
+  final List<String> genderOptions = Constants().genderOptions;
+  final List<String> bloodGroups = Constants().bloodGroups;
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
   late TextEditingController rollNumberController;
@@ -53,13 +38,19 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
   late TextEditingController admissionDateController;
   late TextEditingController regNumberController;
   File? _image;
-  String? _selectedGender;
-  String? _selectedBloodGroup;
+  late String? _selectedGender;
+  late String? _selectedBloodGroup;
   final _editStudentProfileFormKey = GlobalKey<FormState>();
+  late String? studentImage;
 
   @override
   void initState() {
     super.initState();
+    studentImage = widget.student.studentPhoto;
+    _selectedGender =
+        (widget.student.gender != null) ? widget.student.gender : null;
+    _selectedBloodGroup =
+        (widget.student.bloodGroup != null) ? widget.student.bloodGroup : null;
     firstNameController = TextEditingController(text: widget.student.firstName);
     lastNameController = TextEditingController(text: widget.student.lastName);
     rollNumberController =
@@ -99,8 +90,6 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String? userToken = Provider.of<UserProvider>(context).userToken;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
@@ -113,29 +102,45 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    _showImageOptions(context);
-                  },
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _image != null
-                        ? FileImage(_image!) as ImageProvider<Object>?
-                        : (widget.student.studentPhoto != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _showImageOptions(context);
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: (studentImage != null)
                             ? MemoryImage(
                                 Uint8List.fromList(
-                                    base64Decode(widget.student.studentPhoto!)),
+                                  base64Decode(studentImage!),
+                                ),
                               )
                             : null,
-                    child: _image == null
-                        ? (widget.student.studentPhoto != null)
-                            ? null
-                            : const Icon(
+                        child: (widget.student.studentPhoto == null)
+                            ? const Icon(
                                 Icons.camera_alt,
                                 size: 30,
                               )
-                        : null,
-                  ),
+                            : null,
+                      ),
+                    ),
+                    if (_image != null) const Text("to"),
+                    if (_image != null)
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            (_image != null) ? FileImage(_image!) : null,
+                        child: (_image == null &&
+                                widget.student.studentPhoto == null)
+                            ? const Icon(
+                                Icons.camera_alt,
+                                size: 30,
+                              )
+                            : null,
+                      ),
+                  ],
                 ),
                 const YMargin(),
                 Padding(
@@ -156,9 +161,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                 ),
                 TextFormField(
                   controller: lastNameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Last Name',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -300,7 +305,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                   },
                 ),
                 DropdownButtonFormField<String>(
-                  value: _selectedGender,
+                  value: (_selectedGender == null)
+                      ? _selectedGender
+                      : toTitleCase(_selectedGender!),
                   items: genderOptions.map((String gender) {
                     return DropdownMenuItem<String>(
                       value: gender,
@@ -388,6 +395,10 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
     );
   }
 
+  String toTitleCase(String text) {
+    return '${text[0].toUpperCase()}${text.substring(1).toLowerCase()}';
+  }
+
   void _showImageOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -417,22 +428,14 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+    final _imagePicker = ImagePicker();
+    final pickedFile = await _imagePicker.pickImage(source: source);
 
-    setState(() {
-      if (pickedFile != null) {
-        // Check if the image is available as a base64 string
-        if (pickedFile.path != null) {
-          _image = File(pickedFile.path);
-        } else {
-          // Use readAsBytes directly and convert it to Uint8List
-          pickedFile.readAsBytes().then((List<int> imageBytes) {
-            _image = File.fromRawPath(Uint8List.fromList(imageBytes));
-          });
-        }
-      }
-    });
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   void _saveChanges() async {
@@ -446,6 +449,10 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       List<int> imageBytes = await _image!.readAsBytes();
       studentPhoto = base64.encode(imageBytes);
       studentPhotoContentType = 'image/png';
+    } else if (studentImage != null) {
+      studentPhoto = studentImage;
+    } else {
+      studentPhoto = null;
     }
 
     // Create a map with the updated student data

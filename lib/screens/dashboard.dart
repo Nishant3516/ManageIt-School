@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:manageit_school/constants/constants.dart';
+import 'package:manageit_school/controllers/auth_controller.dart';
 import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
+import 'package:manageit_school/screens/login.dart';
 import 'package:manageit_school/screens/student_profile.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +29,6 @@ class _DashBoardState extends State<DashBoard> {
     if (user != null) {
       List<dynamic> userRoles = user!['authorities'];
       print(user);
-      print(isUserStudent);
       if (userRoles.contains('ROLE_ADMIN')) {
         finalDashboardMenu = Constants().adminDashboardMenu;
       } else if (userRoles.contains('ROLE_SCHOOL_ACCOUNTANT')) {
@@ -47,33 +48,23 @@ class _DashBoardState extends State<DashBoard> {
     super.didChangeDependencies();
   }
 
-  final Student student = Student(
-    firstName: 'John',
-    lastName: 'Doe',
-    rollNumber: '12345',
-    phoneNumber: '1234567890',
-    startDate: DateTime.now().toIso8601String(),
-    addressLine1: '123 Main St',
-    fatherName: 'John Doe Sr.',
-    schoolClass: Class(
-      id: 1,
-      className: 'Class 10',
-      classLongName: 'Class 10A',
-      school: School(
-        id: 1,
-        groupName: 'School Group',
-        schoolName: 'My School',
-        tenant: Tenant(
-          id: 1,
-          tenantName: 'My Tenant',
-        ),
-      ),
-    ),
-  );
+  void handleLogout() async {
+    NavigatorWidget().screenPushReplacement(context, LoginScreen());
+    await AuthController().clearUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Admin Panel'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout_outlined),
+            onPressed: handleLogout,
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: (user == null)
             ? const Center(child: CircularProgressIndicator())
@@ -105,7 +96,7 @@ class _DashBoardState extends State<DashBoard> {
                               height: MediaQuery.sizeOf(context).height * 0.05,
                             ),
                             Text(
-                              'Hi, ${user!['firstname']}',
+                              'Hi, ${user!['firstname'] ?? 'admin'}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 28,
@@ -113,9 +104,10 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                             ),
                             if (!isUserStudent)
-                              Text(
-                                'Welcome to Manage!t School\nAdmin Control',
-                                style: const TextStyle(
+                              const Text(
+                                'Welcome to Manage!t School Admin Control',
+                                softWrap: true,
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -146,26 +138,26 @@ class _DashBoardState extends State<DashBoard> {
                               )
                           ],
                         ),
-                        if (isUserStudent)
-                          GestureDetector(
-                            onTap: () {
-                              NavigatorWidget().screenReplacement(
-                                context,
-                                StudentProfileScreen(
-                                  // student: Student.fromJson(user!),
-                                  studentId: student.id!,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 70,
-                              width: 70,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
+                        // if (isUserStudent)
+                        //   GestureDetector(
+                        //     onTap: () {
+                        //       NavigatorWidget().screenReplacement(
+                        //         context,
+                        //         StudentProfileScreen(
+                        //           // student: Student.fromJson(user!),
+                        //           studentId: student.id!,
+                        //         ),
+                        //       );
+                        //     },
+                        //     child: Container(
+                        //       height: 70,
+                        //       width: 70,
+                        //       decoration: const BoxDecoration(
+                        //         shape: BoxShape.circle,
+                        //         color: Colors.black,
+                        //       ),
+                        //     ),
+                        //   ),
                       ],
                     ),
                   ),

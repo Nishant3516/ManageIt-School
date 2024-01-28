@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/add_student.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class ShowClassStudentsScreen extends StatefulWidget {
 
 class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
   List<Student>? students;
+  late Future<List<Student>?> studentsFuture;
 
   @override
   void initState() {
@@ -36,24 +39,23 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    fetchClassStudents();
+    studentsFuture = fetchClassStudents();
   }
 
-  Future<void> fetchClassStudents() async {
-    final String? userToken = Provider.of<UserProvider>(context).userToken;
+  Future<List<Student>?> fetchClassStudents() async {
+    final String? userToken =
+        Provider.of<UserProvider>(context, listen: false).userToken;
 
     final List<Student>? classStudents =
         await StudentService.getStudentsByClass(widget.classId, userToken!);
 
-    if (classStudents != null) {
-      setState(() {
-        students = classStudents;
-      });
-    } else {
-      setState(() {
-        students = null;
-      });
-    }
+    return classStudents;
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      studentsFuture = fetchClassStudents();
+    });
   }
 
   @override
@@ -65,45 +67,59 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: ElevatedButton.icon(
-                onPressed: () {
-                  NavigatorWidget()
-                      .screenReplacement(context, const AddStudentScreen());
-                },
-                icon: const Icon(Icons.add_outlined),
-                label: const Text('Add Student')),
+              onPressed: () {
+                NavigatorWidget()
+                    .screenReplacement(context, const AddStudentScreen());
+              },
+              icon: const Icon(Icons.add_outlined),
+              label: const Text('Add Student'),
+            ),
           )
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          child: Column(
-            children: [
-              (students == null)
-                  ? const Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(),
-                          YMargin(),
-                          Text('Loading students for this class.'),
-                        ],
-                      ),
-                    )
-                  : Expanded(
-                      child: ListView.builder(
-                        itemCount: students!.length,
-                        itemBuilder: (context, index) {
-                          return IndStudentBox(
-                            students: students,
-                            indStudent: students![index],
-                          );
-                        },
-                      ),
-                    ),
-            ],
-          ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<List<Student>?>(
+          future: studentsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Column(
+                  children: [
+                    YMargin(),
+                    CircularProgressIndicator(),
+                    Text("Loading students...")
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('No students available for this class.'),
+              );
+            } else {
+              students = snapshot.data;
+              return ListView.builder(
+                padding: const EdgeInsets.all(10),
+                itemCount: students!.length,
+                itemBuilder: (context, index) {
+                  return IndStudentBox(
+                    students: students,
+                    indStudent: students![index],
+                    onDelete: (studentId) {
+                      setState(() {
+                        students!
+                            .removeWhere((student) => student.id == studentId);
+                      });
+                    },
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );
@@ -113,12 +129,13 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
 class IndStudentBox extends StatefulWidget {
   final Student indStudent;
   final List<Student>? students;
+  final Function(int) onDelete;
 
-  const IndStudentBox({
-    super.key,
-    required this.indStudent,
-    required this.students,
-  });
+  const IndStudentBox(
+      {super.key,
+      required this.indStudent,
+      required this.students,
+      required this.onDelete});
 
   @override
   State<IndStudentBox> createState() => _IndStudentBoxState();
@@ -140,7 +157,7 @@ class _IndStudentBoxState extends State<IndStudentBox> {
   Widget build(BuildContext context) {
     Color boxColor = _getRandomPastelColor();
     final bool isUserStudent =
-        Provider.of<UserProvider>(context).isUserStudent();
+        Provider.of<UserProvider>(context, listen: false).isUserStudent();
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
@@ -155,10 +172,17 @@ class _IndStudentBoxState extends State<IndStudentBox> {
         },
         contentPadding: const EdgeInsets.all(10),
         leading: CircleAvatar(
-          child: CircleAvatar(
-            radius: 30,
-            child: Text(widget.indStudent.firstName[0]),
-          ),
+          radius: 25,
+          backgroundImage: widget.indStudent.studentPhoto != null
+              ? MemoryImage(
+                  Uint8List.fromList(
+                    base64Decode(widget.indStudent.studentPhoto!),
+                  ),
+                )
+              : null,
+          child: widget.indStudent.studentPhoto == null
+              ? Text(widget.indStudent.firstName[0])
+              : null,
         ),
         subtitle: Text(widget.indStudent.id!.toString()),
         title: Text(
@@ -172,7 +196,7 @@ class _IndStudentBoxState extends State<IndStudentBox> {
                     NavigatorWidget().screenReplacement(context,
                         EditStudentProfileScreen(student: widget.indStudent));
                   } else if (value == 'delete') {
-                    // deleteStudent(widget.indStudent.id!);
+                    deleteStudent(widget.indStudent.id!);
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -205,42 +229,43 @@ class _IndStudentBoxState extends State<IndStudentBox> {
     return name[0].toUpperCase() + name.substring(1).toLowerCase();
   }
 
-  // void deleteStudent(int studentIdToDelete) async {
-  //   final String? userToken = Provider.of<UserProvider>(context).userToken;
+  void deleteStudent(int studentIdToDelete) async {
+    final String? userToken =
+        Provider.of<UserProvider>(context, listen: false).userToken;
 
-  //   // Save a copy of the student being deleted for Undo
-  //   Student deletedStudent = widget.indStudent;
+    // Save a copy of the student being deleted for Undo
+    Student deletedStudent = widget.indStudent;
 
-  //   // Call the deleteStudentById function
-  //   await StudentService().deleteStudentById(studentIdToDelete, userToken!);
+    // Call the deleteStudentById function
+    await StudentService().deleteStudentById(studentIdToDelete, userToken!);
 
-  //   // Remove the student from the list immediately
-  //   try {
-  //     setState(() {
-  //       widget.students?.remove(widget.indStudent);
-  //     });
-  //   } catch (e) {
-  //     print("Error removing student: $e");
-  //   }
+    // Remove the student from the list immediately
+    try {
+      setState(() {
+        widget.onDelete(studentIdToDelete);
+      });
+    } catch (e) {
+      print("Error removing student: $e");
+    }
 
-  //   // Show a Snackbar with an Undo button
-  //   final ScaffoldMessengerState scaffoldMessenger =
-  //       ScaffoldMessenger.of(context);
+    // Show a Snackbar with an Undo button
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
 
-  //   // Show the Snackbar with an Undo button
-  //   scaffoldMessenger.showSnackBar(
-  //     SnackBar(
-  //       content: const Text('Student deleted'),
-  //       action: SnackBarAction(
-  //         label: 'Undo',
-  //         onPressed: () {
-  //           // If Undo is pressed, add the student back to the list
-  //           setState(() {
-  //             widget.students?.insert(0, deletedStudent);
-  //           });
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
+    // Show the Snackbar with an Undo button
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: const Text('Student deleted'),
+        // action: SnackBarAction(
+        //   label: 'Undo',
+        //   onPressed: () {
+        //     // If Undo is pressed, add the student back to the list
+        //     setState(() {
+        //       widget.students?.insert(0, deletedStudent);
+        //     });
+        //   },
+        // ),
+      ),
+    );
+  }
 }

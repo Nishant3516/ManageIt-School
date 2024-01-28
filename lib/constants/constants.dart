@@ -17,6 +17,24 @@ class Constants {
   static const String token =
       "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuaXNoYW50LnNzaWsiLCJhdXRoIjoiUk9MRV9BRE1JTixST0xFX1NDSE9PTF9BRE1JTixST0xFX1NDSE9PTF9TVFVERU5ULFJPTEVfU0NIT09MX1RFQUNIRVIsUk9MRV9VU0VSIiwiZXhwIjoxNzA2Mjg5MjkxfQ.4uW4knnhC0mMdAzZsJteprfL76EanqFSvhaYKD3mYuE4Cax8onTV8EtGWYDuBguOgsX_fh0I_S6TjsC9MyLrdA";
 
+  final List<String> genderOptions = [
+    'Male',
+    'Female',
+    'Other',
+    'Wont Declare'
+  ];
+
+  final List<String> bloodGroups = [
+    'A_Pos',
+    'A_Neg',
+    'B_Pos',
+    'B_Neg',
+    'AB_Pos',
+    'AB_Neg',
+    'O_Pos',
+    'O_Neg'
+  ];
+
   final List<List<dynamic>> studentsMainBox = [
     [
       'assets/icons/ic_attendance.png',
@@ -52,7 +70,7 @@ class Constants {
     ],
     ['assets/icons/ic_password.png', 'Reset Password', ChangePasswordScreen()],
     // ['assets/icons/ic_event.png', 'Events', EventsScreen()],
-    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
+    // ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> adminDashboardMenu = [
@@ -71,7 +89,7 @@ class Constants {
       'Manage\nAttendance',
       const OverallAttendanceScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
+    // ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> accountantDashboardMenu = [
@@ -85,7 +103,7 @@ class Constants {
       'Manage\nPayments',
       const StudentPaymentSearchScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
+    // ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 
   final List<List<dynamic>> schoolTeacherDashboardMenu = [
@@ -99,6 +117,6 @@ class Constants {
       'Manage\nPayments',
       const StudentPaymentSearchScreen()
     ],
-    ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
+    // ['assets/icons/ic_logout.png', 'Logout', const LoginScreen()],
   ];
 }
