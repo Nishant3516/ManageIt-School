@@ -143,9 +143,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: TextFormField(
                     controller: firstNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'First Name',
-                      border: const UnderlineInputBorder(),
+                      border: UnderlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -428,9 +428,25 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
     final pickedFile = await _imagePicker.pickImage(source: source);
 
     if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      // Get the image bytes
+      List<int> imageBytes = await pickedFile.readAsBytes();
+
+      // Check the size of the image
+      int imageSizeInKB = imageBytes.length ~/ 1024;
+
+      if (imageSizeInKB > 500) {
+        // If the image size is greater than 500KB, show a SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Selected image size exceeds 500KB. Please choose a smaller image.'),
+          ),
+        );
+      } else {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
     }
   }
 
