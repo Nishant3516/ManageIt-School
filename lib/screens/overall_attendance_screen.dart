@@ -5,6 +5,7 @@ import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'dart:math' as math;
 
 class OverallAttendanceScreen extends StatelessWidget {
+  static const routeName = 'OverallAttendanceScreen';
   const OverallAttendanceScreen({super.key});
 
   @override

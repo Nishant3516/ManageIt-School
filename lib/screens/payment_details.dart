@@ -3,6 +3,7 @@ import 'package:manageit_school/models/payment.dart';
 import 'package:manageit_school/services/payment_service.dart';
 
 class PaymentDetails extends StatelessWidget {
+  static const routeName = 'PaymentDetails';
   final int id;
   const PaymentDetails({
     super.key,

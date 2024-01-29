@@ -6,7 +6,10 @@ import 'package:manageit_school/screens/show_class_students.dart';
 import 'package:manageit_school/services/api_service.dart';
 import 'dart:math';
 
+import 'package:manageit_school/utils/manageit_router.dart';
+
 class ShowClassesScreen extends StatefulWidget {
+  static const routeName = 'ShowClassesScreen';
   const ShowClassesScreen({super.key});
 
   @override
@@ -137,12 +140,16 @@ class IndClassBox extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          NavigatorWidget().screenReplacement(
-              context,
-              ShowClassStudentsScreen(
-                classId: indclass.id,
-                classname: indclass.classLongName,
-              ));
+          // NavigatorWidget().screenReplacement(
+          //     context,
+          //     ShowClassStudentsScreen(
+          //       classId: indclass.id,
+          //       classname: indclass.classLongName,
+          //     ));
+          ManageItRouter.push(ShowClassStudentsScreen.routeName, arguments: {
+            'classId': indclass.id,
+            'classname': indclass.classLongName
+          });
         },
         contentPadding: const EdgeInsets.all(10),
         style: ListTileStyle.list,

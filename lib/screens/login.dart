@@ -6,9 +6,11 @@ import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/dashboard.dart';
 import 'package:manageit_school/screens/forgot_password.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = 'LoginScreen';
   const LoginScreen({super.key});
 
   @override
@@ -43,10 +45,12 @@ class _LoginScreenState extends State<LoginScreen> {
           Provider.of<UserProvider>(context, listen: false)
               .setUserDetails(userData, userToken);
 
-          NavigatorWidget().screenPushReplacement(
-            context,
-            const DashBoard(),
-          );
+          // NavigatorWidget().screenPushReplacement(
+          //   context,
+          //   const DashBoard(),
+          // );
+
+          ManageItRouter.replace(DashBoard.routeName);
         } else {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(

@@ -5,6 +5,7 @@ import 'package:manageit_school/screens/login.dart';
 import 'package:manageit_school/controllers/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const routeName = 'SplashScreen';
   const SplashScreen({super.key});
 
   @override

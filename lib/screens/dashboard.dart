@@ -7,9 +7,13 @@ import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/login.dart';
 import 'package:manageit_school/screens/student_profile.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
+import 'package:manageit_school/widgets/dashboard_main_box.dart';
+import 'package:manageit_school/widgets/dashboard_menu.dart';
 import 'package:provider/provider.dart';
 
 class DashBoard extends StatefulWidget {
+  static const routeName = 'DashBoard';
   const DashBoard({super.key});
 
   @override
@@ -49,7 +53,8 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   void handleLogout() async {
-    NavigatorWidget().screenPushReplacement(context, LoginScreen());
+    // NavigatorWidget().screenPushReplacement(context, LoginScreen());
+    ManageItRouter.pushNewStack(LoginScreen.routeName);
     await AuthController().clearUserData();
   }
 
@@ -228,107 +233,6 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ],
               ),
-      ),
-    );
-  }
-}
-
-class DashBoardMainBox extends StatelessWidget {
-  final String iconImage;
-  final String title;
-  final String? value;
-  final Widget nextScreen;
-  const DashBoardMainBox({
-    super.key,
-    required this.iconImage,
-    required this.title,
-    required this.nextScreen,
-    this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        NavigatorWidget().screenReplacement(context, nextScreen);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            border: Border.all(width: 1, color: Colors.black)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              iconImage,
-              height: 60,
-              width: 60,
-            ),
-            if (value != null)
-              Text(
-                value!,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28,
-                ),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const Icon(Icons.arrow_forward_outlined),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DashBoardMenu extends StatelessWidget {
-  final String iconImage;
-  final String title;
-  final Widget nextScreen;
-  const DashBoardMenu({
-    super.key,
-    required this.iconImage,
-    required this.title,
-    required this.nextScreen,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        NavigatorWidget().screenReplacement(context, nextScreen);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 1, color: Colors.black)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              iconImage,
-              height: 40,
-              width: 40,
-            ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ],
-        ),
       ),
     );
   }

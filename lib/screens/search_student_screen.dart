@@ -9,9 +9,11 @@ import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/student_profile.dart';
 import 'package:manageit_school/services/api_service.dart';
 import 'package:manageit_school/services/student_service.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
 import 'package:provider/provider.dart';
 
 class SearchStudentScreen extends StatefulWidget {
+  static const routeName = 'SearchStudentScreen';
   const SearchStudentScreen({super.key});
 
   @override
@@ -216,8 +218,10 @@ class _SearchStudentScreenState extends State<SearchStudentScreen> {
             if (selectedStudent != null)
               ListTile(
                 onTap: () {
-                  NavigatorWidget().screenReplacement(context,
-                      StudentProfileScreen(studentId: selectedStudent!.id!));
+                  // NavigatorWidget().screenReplacement(context,
+                  //     StudentProfileScreen(studentId: selectedStudent!.id!));
+                  ManageItRouter.push(StudentProfileScreen.routeName,
+                      arguments: {'studentId': selectedStudent!.id});
                 },
                 leading: const CircleAvatar(
                   radius: 20,

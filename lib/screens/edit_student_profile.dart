@@ -12,10 +12,11 @@ import 'package:manageit_school/services/student_service.dart';
 import 'package:provider/provider.dart';
 
 class EditStudentProfileScreen extends StatefulWidget {
-  final Student student;
+  static const routeName = 'EditStudentProfileScreen';
+  //final Student student;
   const EditStudentProfileScreen({
     super.key,
-    required this.student,
+    // required this.student,
   });
 
   @override
@@ -42,34 +43,30 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
   late String? _selectedBloodGroup;
   final _editStudentProfileFormKey = GlobalKey<FormState>();
   late String? studentImage;
+  late Student student;
 
   @override
-  void initState() {
-    super.initState();
-    studentImage = widget.student.studentPhoto;
-    _selectedGender =
-        (widget.student.gender != null) ? widget.student.gender : null;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    student = ModalRoute.of(context)!.settings.arguments as Student;
+    studentImage = student.studentPhoto;
+    _selectedGender = (student.gender != null) ? student.gender : null;
     _selectedBloodGroup =
-        (widget.student.bloodGroup != null) ? widget.student.bloodGroup : null;
-    firstNameController = TextEditingController(text: widget.student.firstName);
-    lastNameController = TextEditingController(text: widget.student.lastName);
-    rollNumberController =
-        TextEditingController(text: widget.student.rollNumber);
-    phoneNumberController =
-        TextEditingController(text: widget.student.phoneNumber);
-    addressLine1Controller =
-        TextEditingController(text: widget.student.addressLine1);
+        (student.bloodGroup != null) ? student.bloodGroup : null;
+    firstNameController = TextEditingController(text: student.firstName);
+    lastNameController = TextEditingController(text: student.lastName);
+    rollNumberController = TextEditingController(text: student.rollNumber);
+    phoneNumberController = TextEditingController(text: student.phoneNumber);
+    addressLine1Controller = TextEditingController(text: student.addressLine1);
     addressLine2Controller =
-        TextEditingController(text: widget.student.addressLine2 ?? '');
-    fatherNameController =
-        TextEditingController(text: widget.student.fatherName);
+        TextEditingController(text: student.addressLine2 ?? '');
+    fatherNameController = TextEditingController(text: student.fatherName);
     motherNameController =
-        TextEditingController(text: widget.student.motherName ?? '');
-    emailController = TextEditingController(text: widget.student.email ?? '');
+        TextEditingController(text: student.motherName ?? '');
+    emailController = TextEditingController(text: student.email ?? '');
     admissionDateController =
-        TextEditingController(text: widget.student.admissionDate ?? '');
-    regNumberController =
-        TextEditingController(text: widget.student.regNumber ?? '');
+        TextEditingController(text: student.admissionDate ?? '');
+    regNumberController = TextEditingController(text: student.regNumber ?? '');
   }
 
   @override
@@ -118,7 +115,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                                 ),
                               )
                             : null,
-                        child: (widget.student.studentPhoto == null)
+                        child: (student.studentPhoto == null)
                             ? const Icon(
                                 Icons.camera_alt,
                                 size: 30,
@@ -132,8 +129,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                         radius: 50,
                         backgroundImage:
                             (_image != null) ? FileImage(_image!) : null,
-                        child: (_image == null &&
-                                widget.student.studentPhoto == null)
+                        child: (_image == null && student.studentPhoto == null)
                             ? const Icon(
                                 Icons.camera_alt,
                                 size: 30,
@@ -457,7 +453,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
 
     // Create a map with the updated student data
     Student updatedData = Student(
-      id: widget.student.id,
+      id: student.id,
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       rollNumber: rollNumberController.text,
@@ -471,7 +467,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       bloodGroup: _selectedBloodGroup,
       admissionDate: admissionDateController.text,
       regNumber: regNumberController.text,
-      schoolClass: widget.student.schoolClass,
+      schoolClass: student.schoolClass,
       studentPhoto: studentPhoto != null ? studentPhoto : null,
       studentPhotoContentType: studentPhotoContentType,
     );
@@ -482,7 +478,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       try {
         final bool isDataUpdated = await StudentService().updateStudentDetails(
           updatedData,
-          widget.student.id!,
+          student.id!,
           userToken!,
         );
         if (isDataUpdated) {

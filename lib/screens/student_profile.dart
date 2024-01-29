@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
 import 'package:manageit_school/globalWidgets/x_margin.dart';
 import 'package:manageit_school/globalWidgets/y_margin.dart';
 import 'package:manageit_school/models/student.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/edit_student_profile.dart';
 import 'package:manageit_school/services/student_service.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
 import 'package:provider/provider.dart';
 
 class StudentProfileScreen extends StatefulWidget {
-  final int studentId;
+  static const routeName = 'StudentProfileScreen';
   const StudentProfileScreen({
     super.key,
-    required this.studentId,
   });
 
   @override
@@ -23,16 +22,13 @@ class StudentProfileScreen extends StatefulWidget {
 
 class _StudentProfileScreenState extends State<StudentProfileScreen> {
   Student? student;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  late int studentId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    getStudent(widget.studentId);
+    studentId = ModalRoute.of(context)!.settings.arguments as int;
+    getStudent(studentId);
   }
 
   Future<void> getStudent(int studentId) async {
@@ -120,14 +116,18 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                         if (!isUserStudent)
                           IconButton(
                             onPressed: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                builder: (context) =>
-                                    EditStudentProfileScreen(student: student!),
-                              ))
+                              ManageItRouter.push(
+                                      EditStudentProfileScreen.routeName,
+                                      arguments: student)
                                   .then((_) {
-                                getStudent(widget.studentId);
+                                getStudent(studentId);
                               });
+//                             Navigator.of(context).pushNamed(
+//   EditStudentProfileScreen.routeName,
+//   arguments: student,
+// ).then((_) {
+//   getStudent(studentId);
+// });
                             },
                             icon: const Icon(Icons.edit_outlined),
                           ),

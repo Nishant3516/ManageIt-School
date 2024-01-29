@@ -7,8 +7,10 @@ import 'package:manageit_school/models/student.dart';
 import 'package:manageit_school/screens/screens.dart';
 import 'package:manageit_school/services/api_service.dart';
 import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
 
 class AddStudentScreen extends StatefulWidget {
+  static const routeName = 'AddStudentScreen';
   const AddStudentScreen({super.key});
 
   @override
@@ -129,8 +131,10 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   TextButton(
                     child: const Text('OK'),
                     onPressed: () {
-                      Navigator.of(context).pop(true);
-                      Navigator.of(context).pop(true);
+                      // Navigator.of(context).pop(true);
+                      // Navigator.of(context).pop(true);
+                      ManageItRouter.pop(true);
+                      ManageItRouter.pop(true);
                     },
                   ),
                 ],
