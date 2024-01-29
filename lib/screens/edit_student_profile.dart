@@ -237,10 +237,6 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                     border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Address Line 2';
-                    }
-
                     return null;
                   },
                 ),
@@ -340,29 +336,24 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
-                  controller: admissionDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Admission Date (YYYY-MM-DD)',
-                    border: UnderlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the admission date';
-                    }
-
-                    // Define the expected date format
-                    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-
-                    // Try to parse the entered value as a date
-                    try {
-                      dateFormat.parseStrict(value);
-                    } catch (e) {
-                      return 'Please enter a valid date in the format yyyy-MM-dd';
-                    }
-
-                    return null;
-                  },
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: admissionDateController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: const InputDecoration(
+                          labelText: 'Admission Date',
+                        ),
+                        validator: _validateDate,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context),
+                    ),
+                  ],
                 ),
                 TextFormField(
                   controller: regNumberController,
@@ -389,6 +380,29 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
         ),
       ),
     );
+  }
+
+  String? _validateDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select a date';
+    }
+    return null;
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != DateTime.now()) {
+      setState(() {
+        admissionDateController.text =
+            DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
   }
 
   String toTitleCase(String text) {

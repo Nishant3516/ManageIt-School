@@ -4,6 +4,7 @@ import 'package:manageit_school/screens/screens.dart';
 import 'package:manageit_school/globalWidgets/global_widgets.dart';
 import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/utils/manageit_router.dart';
 import 'package:manageit_school/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -20,17 +21,18 @@ class ShowClassStudentsScreen extends StatefulWidget {
 class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
   List<Student>? students;
   late Future<List<Student>?> studentsFuture;
+  late Class selectedClass;
   late String classname;
   late int classId;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Map<String, dynamic> args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    classname = args['classname'] as String;
-    classId = args['classId'] as int;
+    Class args = ModalRoute.of(context)!.settings.arguments as Class;
+    classname = args.classLongName;
+    classId = args.id;
     studentsFuture = fetchClassStudents();
+    selectedClass = args;
   }
 
   Future<List<Student>?> fetchClassStudents() async {
@@ -59,8 +61,8 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
             padding: const EdgeInsets.only(right: 20.0),
             child: ElevatedButton.icon(
               onPressed: () {
-                NavigatorWidget()
-                    .screenReplacement(context, const AddStudentScreen());
+                ManageItRouter.push(AddStudentScreen.routeName,
+                    arguments: selectedClass);
               },
               icon: const Icon(Icons.add_outlined),
               label: const Text('Add Student'),

@@ -137,10 +137,8 @@ class IndClassBox extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          ManageItRouter.push(ShowClassStudentsScreen.routeName, arguments: {
-            'classId': indclass.id,
-            'classname': indclass.classLongName
-          });
+          ManageItRouter.push(ShowClassStudentsScreen.routeName,
+              arguments: indclass);
         },
         contentPadding: const EdgeInsets.all(10),
         style: ListTileStyle.list,
@@ -164,7 +162,7 @@ class IndClassBox extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.grey[350]!),
-                  color: Colors.white, // Fixed color for the main Container
+                  color: Colors.white,
                 ),
                 child: Center(
                   child: Text(

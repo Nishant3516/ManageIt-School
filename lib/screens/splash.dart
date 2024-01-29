@@ -40,11 +40,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToDashboard(Map<String, dynamic> user) {
-    ManageItRouter.pushNewStack(DashBoard.routeName);
+    ManageItRouter.popAndPush(DashBoard.routeName);
   }
 
   void navigateToLoginScreen() {
-    ManageItRouter.pushNewStack(DashBoard.routeName);
+    ManageItRouter.popAndPush(LoginScreen.routeName);
   }
 
   @override

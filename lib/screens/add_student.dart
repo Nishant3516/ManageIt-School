@@ -42,8 +42,26 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
       setState(() {
         _classes = result;
+
         if (_classes.isNotEmpty) {
-          _selectedClass = _classes[0];
+          // Check if there are route arguments
+          final Class? argumentClass =
+              ModalRoute.of(context)!.settings.arguments as Class?;
+
+          // If there are arguments, find the index of the argument class
+          if (argumentClass != null) {
+            final int index =
+                _classes.indexWhere((c) => c.id == argumentClass.id);
+
+            // If the class is found, set _selectedClass to it
+            if (index != -1) {
+              _selectedClass = _classes[index];
+            } else {
+              _selectedClass = _classes[0];
+            }
+          } else {
+            _selectedClass = _classes[0];
+          }
         } else {
           _selectedClass = null;
         }
@@ -231,7 +249,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   },
                 ),
                 TextFormField(
-                  controller: _rollNumberController,
+                  controller: _addressLine1Controller,
                   decoration: const InputDecoration(
                     labelText: 'Address Line 1',
                   ),
@@ -282,7 +300,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                       child: TextFormField(
                         controller: _dateOfBirthController,
                         readOnly: true,
-                        onTap: () => _selectDate(context),
+                        onTap: () => _selectDateOfBirth(context),
                         decoration: const InputDecoration(
                           labelText: 'Date of Birth',
                         ),
