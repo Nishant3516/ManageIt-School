@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/models/student.dart';
-import 'package:manageit_school/screens/screens.dart';
-import 'package:manageit_school/services/api_service.dart';
+import 'package:manageit_school/controllers/controllers.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/services/services.dart';
 import 'package:manageit_school/utils/manageit_router.dart';
 
@@ -131,8 +128,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   TextButton(
                     child: const Text('OK'),
                     onPressed: () {
-                      // Navigator.of(context).pop(true);
-                      // Navigator.of(context).pop(true);
                       ManageItRouter.pop(true);
                       ManageItRouter.pop(true);
                     },
@@ -145,13 +140,13 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
           // Handle the case where user token is null (user not logged in)
           print("User not logged in");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Unable to add user')),
+            const SnackBar(content: Text('Unable to add user')),
           );
         }
       } catch (e) {
         print("An error occurred while adding the student: $e");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unable to add user')),
+          const SnackBar(content: Text('Unable to add user')),
         );
       }
     } else {

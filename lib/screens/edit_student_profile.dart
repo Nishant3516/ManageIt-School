@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:manageit_school/constants/constants.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/services/student_service.dart';
+import 'package:manageit_school/services/services.dart';
 import 'package:provider/provider.dart';
 
 class EditStudentProfileScreen extends StatefulWidget {
@@ -171,9 +171,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                 TextFormField(
                   controller: rollNumberController,
                   // keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Roll Number',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -194,10 +194,10 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                   controller: phoneNumberController,
                   keyboardType: TextInputType.phone,
                   maxLength: 10,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Phone Number',
                     counterText: '',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -218,9 +218,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                 ),
                 TextFormField(
                   controller: addressLine1Controller,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Address Line 1',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -232,9 +232,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                 ),
                 TextFormField(
                   controller: addressLine2Controller,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Address Line 2',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -246,9 +246,9 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                 ),
                 TextFormField(
                   controller: fatherNameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Father\'s Name',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -260,14 +260,14 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                       return 'Please enter a valid Father\'s Name';
                     }
 
-                    return null; // Return null if all validations pass
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: motherNameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Mother\'s Name',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -279,25 +279,25 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                       return 'Please enter a valid Mother\'s Name';
                     }
 
-                    return null; // Return null if all validations pass
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    // You can add a more comprehensive email validation logic here
+
                     if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
                         .hasMatch(value)) {
                       return 'Please enter a valid email address';
                     }
-                    return null; // Return null if the input is valid
+                    return null;
                   },
                 ),
                 DropdownButtonFormField<String>(
@@ -337,14 +337,14 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please select your blood group';
                     }
-                    return null; // Return null if the input is valid
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: admissionDateController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Admission Date (YYYY-MM-DD)',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -361,21 +361,21 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
                       return 'Please enter a valid date in the format yyyy-MM-dd';
                     }
 
-                    return null; // Return null if the input is valid
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: regNumberController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Registration Number',
-                    border: const UnderlineInputBorder(),
+                    border: UnderlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the registration number';
                     }
 
-                    return null; // Return null if the input is valid
+                    return null;
                   },
                 ),
                 const YMargin(height: 20),
@@ -424,8 +424,8 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final _imagePicker = ImagePicker();
-    final pickedFile = await _imagePicker.pickImage(source: source);
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: source);
 
     if (pickedFile != null) {
       // Get the image bytes
@@ -437,7 +437,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       if (imageSizeInKB > 500) {
         // If the image size is greater than 500KB, show a SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
                 'Selected image size exceeds 500KB. Please choose a smaller image.'),
           ),
@@ -484,7 +484,7 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
       admissionDate: admissionDateController.text,
       regNumber: regNumberController.text,
       schoolClass: student.schoolClass,
-      studentPhoto: studentPhoto != null ? studentPhoto : null,
+      studentPhoto: studentPhoto,
       studentPhotoContentType: studentPhotoContentType,
     );
 
@@ -521,13 +521,13 @@ class _EditStudentProfileScreenState extends State<EditStudentProfileScreen> {
         } else {
           print('Error updating the data');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Unable to update student data')),
+            const SnackBar(content: Text('Unable to update student data')),
           );
         }
       } catch (e) {
         print("Error occurred while updating the data: $e");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unable to update student data')),
+          const SnackBar(content: Text('Unable to update student data')),
         );
       }
     }

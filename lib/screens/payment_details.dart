@@ -18,7 +18,7 @@ class PaymentDetails extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Payment Details'),
+              title: const Text('Payment Details'),
             ),
             body: const Center(
               child: CircularProgressIndicator(),
@@ -27,7 +27,7 @@ class PaymentDetails extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Payment Details'),
+              title: const Text('Payment Details'),
             ),
             body: const Center(
               child: Text('Error loading payments'),
@@ -36,7 +36,7 @@ class PaymentDetails extends StatelessWidget {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Payment Details'),
+              title: const Text('Payment Details'),
             ),
             body: const Center(
               child: Text('No payments available'),
@@ -46,7 +46,7 @@ class PaymentDetails extends StatelessWidget {
           List<Payment> payments = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-              title: Text('Payment Details'),
+              title: const Text('Payment Details'),
             ),
             body: SingleChildScrollView(
               child: Padding(

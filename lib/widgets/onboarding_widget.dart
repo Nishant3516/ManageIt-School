@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
 
 class OnboardingWidget extends StatelessWidget {
   final String imageUrl;

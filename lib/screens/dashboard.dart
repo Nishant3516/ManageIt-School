@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:manageit_school/constants/constants.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/models.dart';
+import 'package:manageit_school/controllers/controllers.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/login.dart';
-import 'package:manageit_school/screens/student_profile.dart';
-import 'package:manageit_school/utils/manageit_router.dart';
-import 'package:manageit_school/widgets/dashboard_main_box.dart';
-import 'package:manageit_school/widgets/dashboard_menu.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/utils/utils.dart';
+import 'package:manageit_school/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class DashBoard extends StatefulWidget {
@@ -62,10 +58,10 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Panel'),
+        title: const Text('Admin Panel'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout_outlined),
+            icon: const Icon(Icons.logout_outlined),
             onPressed: handleLogout,
           )
         ],

@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/global_widgets.dart';
 import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/screens.dart';
@@ -82,8 +80,6 @@ class _IndStudentBoxState extends State<IndStudentBox> {
                   if (value == 'edit') {
                     ManageItRouter.push(EditStudentProfileScreen.routeName,
                         arguments: widget.indStudent);
-                    // NavigatorWidget().screenReplacement(context,
-                    //     EditStudentProfileScreen(student: widget.indStudent));
                   } else if (value == 'delete') {
                     deleteStudent(widget.indStudent.id!);
                   }
@@ -143,8 +139,8 @@ class _IndStudentBoxState extends State<IndStudentBox> {
 
     // Show the Snackbar with an Undo button
     scaffoldMessenger.showSnackBar(
-      SnackBar(
-        content: const Text('Student deleted'),
+      const SnackBar(
+        content: Text('Student deleted'),
         // action: SnackBarAction(
         //   label: 'Undo',
         //   onPressed: () {

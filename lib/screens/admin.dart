@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/screens/add_student.dart';
-import 'package:manageit_school/screens/search_student_screen.dart';
-import 'package:manageit_school/screens/show_classes.dart';
-import 'package:manageit_school/screens/student_payement_search.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/screens/screens.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});

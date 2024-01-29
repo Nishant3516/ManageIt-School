@@ -1,23 +1,16 @@
-import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/add_student.dart';
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/student.dart';
-import 'package:manageit_school/services/student_service.dart';
-import 'package:manageit_school/widgets/ind_student_box.dart';
+import 'package:manageit_school/providers/user_provider.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
+import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ShowClassStudentsScreen extends StatefulWidget {
   static const routeName = 'ShowClassStudentScreen';
-  // final String classname;
-  // final int classId;
 
-  const ShowClassStudentsScreen({
-    super.key,
-    // required this.classId,
-    // required this.classname,
-  });
+  const ShowClassStudentsScreen({super.key});
 
   @override
   State<ShowClassStudentsScreen> createState() =>
@@ -83,6 +76,8 @@ class _ShowClassStudentsScreenState extends State<ShowClassStudentsScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     YMargin(),
                     CircularProgressIndicator(),

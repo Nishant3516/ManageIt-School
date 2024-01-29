@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
+import 'package:manageit_school/controllers/controllers.dart';
 import 'package:manageit_school/providers/user_provider.dart';
 import 'package:manageit_school/screens/screens.dart';
-import 'package:manageit_school/utils/manageit_router.dart';
+import 'package:manageit_school/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 void main(List<String> args) async {

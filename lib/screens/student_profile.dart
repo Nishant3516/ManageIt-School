@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:manageit_school/globalWidgets/x_margin.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/edit_student_profile.dart';
-import 'package:manageit_school/services/student_service.dart';
-import 'package:manageit_school/utils/manageit_router.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class StudentProfileScreen extends StatefulWidget {

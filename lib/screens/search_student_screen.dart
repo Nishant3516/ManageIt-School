@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/divider_with_text.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/student_profile.dart';
-import 'package:manageit_school/services/api_service.dart';
-import 'package:manageit_school/services/student_service.dart';
-import 'package:manageit_school/utils/manageit_router.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SearchStudentScreen extends StatefulWidget {
@@ -218,8 +214,6 @@ class _SearchStudentScreenState extends State<SearchStudentScreen> {
             if (selectedStudent != null)
               ListTile(
                 onTap: () {
-                  // NavigatorWidget().screenReplacement(context,
-                  //     StudentProfileScreen(studentId: selectedStudent!.id!));
                   ManageItRouter.push(StudentProfileScreen.routeName,
                       arguments: {'studentId': selectedStudent!.id});
                 },

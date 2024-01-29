@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/screens/show_class_students.dart';
-import 'package:manageit_school/services/api_service.dart';
+import 'package:manageit_school/controllers/controllers.dart';
+import 'package:manageit_school/models/models.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/services/services.dart';
+import 'package:manageit_school/utils/utils.dart';
 import 'dart:math';
-
-import 'package:manageit_school/utils/manageit_router.dart';
 
 class ShowClassesScreen extends StatefulWidget {
   static const routeName = 'ShowClassesScreen';
@@ -74,7 +72,6 @@ class _ShowClassesScreenState extends State<ShowClassesScreen>
                     ),
                   ),
                   Container(
-                    // margin: const EdgeInsets.only(top: 20),
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: ListView.builder(
                       itemCount: classes!.length,
@@ -140,12 +137,6 @@ class IndClassBox extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          // NavigatorWidget().screenReplacement(
-          //     context,
-          //     ShowClassStudentsScreen(
-          //       classId: indclass.id,
-          //       classname: indclass.classLongName,
-          //     ));
           ManageItRouter.push(ShowClassStudentsScreen.routeName, arguments: {
             'classId': indclass.id,
             'classname': indclass.classLongName

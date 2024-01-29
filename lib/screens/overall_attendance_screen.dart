@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:manageit_school/globalWidgets/x_margin.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
 import 'dart:math' as math;
 
 class OverallAttendanceScreen extends StatelessWidget {

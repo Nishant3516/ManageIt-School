@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/global_widgets.dart';
-import 'package:manageit_school/screens/dashboard.dart';
-import 'package:manageit_school/screens/login.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/controllers/controllers.dart';
+import 'package:manageit_school/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = 'SplashScreen';
@@ -41,11 +40,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToDashboard(Map<String, dynamic> user) {
-    NavigatorWidget().screenPushReplacement(context, const DashBoard());
+    ManageItRouter.pushNewStack(DashBoard.routeName);
   }
 
   void navigateToLoginScreen() {
-    NavigatorWidget().screenPushReplacement(context, const LoginScreen());
+    ManageItRouter.pushNewStack(DashBoard.routeName);
   }
 
   @override

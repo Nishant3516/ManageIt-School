@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:manageit_school/constants/constants.dart';
-import 'package:manageit_school/models/payment.dart';
+import 'package:manageit_school/models/models.dart';
 
 class PaymentService {
   final String token = Constants.token;

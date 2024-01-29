@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/globalWidgets/individual_button.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/screens/login.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/screens/screens.dart';
 
 class PasswordCreatedSuccessScreen extends StatelessWidget {
   const PasswordCreatedSuccessScreen({super.key});

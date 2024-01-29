@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/individual_button.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/dashboard.dart';
-import 'package:manageit_school/screens/forgot_password.dart';
-import 'package:manageit_school/utils/manageit_router.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -103,11 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const YMargin(height: 20),
-                    // SocialAuth(
-                    //   onGoogleSignInComplete: () {},
-                    // ),
-                    // const YMargin(height: 20),
-                    // const DividerWithText(text: 'OR'),
                     const YMargin(height: 20),
                     Form(
                         key: _loginFormKey,

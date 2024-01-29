@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:manageit_school/controllers/auth_controller.dart';
-import 'package:manageit_school/globalWidgets/divider_with_text.dart';
-import 'package:manageit_school/globalWidgets/navigator_widget.dart';
-import 'package:manageit_school/globalWidgets/y_margin.dart';
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/controllers/controllers.dart';
+import 'package:manageit_school/globalWidgets/global_widgets.dart';
+import 'package:manageit_school/models/models.dart';
 import 'package:manageit_school/providers/user_provider.dart';
-import 'package:manageit_school/screens/payment_details.dart';
-import 'package:manageit_school/services/api_service.dart';
-import 'package:manageit_school/services/student_service.dart';
+import 'package:manageit_school/screens/screens.dart';
+import 'package:manageit_school/services/services.dart';
 import 'package:provider/provider.dart';
 
 class StudentPaymentSearchScreen extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:manageit_school/screens/change_password.dart';
 import 'package:manageit_school/screens/date_sheet.dart';
 import 'package:manageit_school/screens/leave_application.dart';
-import 'package:manageit_school/screens/login.dart';
 import 'package:manageit_school/screens/result.dart';
 import 'package:manageit_school/screens/school_gallery.dart';
 import 'package:manageit_school/screens/school_holiday.dart';

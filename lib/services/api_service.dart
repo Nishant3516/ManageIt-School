@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:manageit_school/models/class.dart';
-import 'package:manageit_school/models/student.dart';
+import 'package:manageit_school/models/models.dart';
 
 class ApiService {
   static Future<List<Class>> fetchClasses(String token) async {
